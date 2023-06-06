@@ -5,27 +5,30 @@
     This file adds a geoJson using JQuery
 */
 
-// These are the headers for the results table
-var headers = ["Photo ID","Photo Date","Scale"];
+// These are the headers for the results table; leave the first blank
+var headers = [" ","Photo ID","Photo Date","Scale"];
 
 // This function sets data into the results table. The first item should always be the identifier.
 function resultsTable(feature) {
-    data = {
-        data1: feature.properties.PHOTO_ID,        // set these to the geojson info you want
-        data2: feature.properties.Photo_Date,
-        data3: feature.properties.Scale
-    }
+    data = [ " ",                           // leave this blank
+        feature.properties.PHOTO_ID,        // set these to the geojson info you want
+        feature.properties.Photo_Date,
+        feature.properties.Scale
+    ];
     var table = $("#jsonResults");
     var row = $("<tr>");
-    for(let x in data) {
-        if(data[x] === headers[0]) {
-            row.append($('<td>').text(data[x]));
+    var checkCell = $("<td>");
+    for(let x = 0; x < data.length; x++) {
+        if(x === 0) {
+            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+data[1]}).prop("checked",false);
+            checkCell.append(cBox);
+            row.append(checkCell);
         }
         else {
             row.append($('<td>').text(data[x]));
         }
-        table.append(row);
     }
+    table.append(row);
     // table.appendChild(row);
     // outputList.append('<input type="checkbox">')
 };
@@ -84,7 +87,7 @@ let outputSection = document.getElementById("searchResults"); // html section fo
 // let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
 
 // Add the geoJSON
-$.getJSON('../imagery/aerialsCambium.json', function(data) {
+$.getJSON('../imagery/aerials.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
