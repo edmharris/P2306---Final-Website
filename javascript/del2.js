@@ -25,7 +25,7 @@ const baseLayers = {
     'Esri World Imagery': Esri_WorldImagery,
     'OpenStreetMap': osm
 };
-const baseControl = L.control.layers(baseLayers,null,{position:'topleft'}).addTo(map);
+const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
 
 // var showjson = L.FeatureGroup();
 let photoJSON = L.geoJSON(null,{
@@ -44,13 +44,12 @@ $.getJSON('../imagery/aerials.json', function(data) {
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
 
+    // .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     sameJson.features.sort(function(a,b) { // sort the JSON so it shows up nicely
         var propA = a.properties.PHOTO_ID;
         var propB = b.properties.PHOTO_ID;
         return propA - propB;
-// .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     });
-
 });
 baseControl.addOverlay(photoJSON,"Aerial Image Locations");
 
