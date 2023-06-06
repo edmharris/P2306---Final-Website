@@ -93,6 +93,9 @@ p {
 ul {
     margin-bottom: 10px;
 }
+table {
+    width: 50%;
+}
 
 #logo {
     height: 7.5vh;

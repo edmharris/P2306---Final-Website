@@ -1,0 +1,70 @@
+<!--
+Collaborative Project 2306 - Website for Open House
+Created by Stephen VanDam, Kamryn Sandiford, Ewan Harris
+This file is intended for use as the final submission for the Collaborative Project Open House,
+edited and added to by all contributors. That may change as time goes on, not really a big deal.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Deliverable 2 - Project 2306 - Cambium Inc.</title>
+        <!-- leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""/>
+        <!-- leaflet javascript library -->
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+            crossorigin="">
+        </script>
+        <!-- add JQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Add georaster-layer-for-leaflet -->
+        <script src="https://unpkg.com/georaster-layer-for-leaflet/dist/georaster-layer-for-leaflet.min.js"></script>
+        <!-- Leaflet Draw -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+        <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+        <!-- turf.js - for reading in user input -->
+        <script src='javascript\turf.min.js'></script>
+        <!-- Our site's CSS -->
+        <link rel="stylesheet" href="stylesMain.css"/>
+    </head>
+    <body>
+        <header>
+            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="del1.html">Deliverable 1</a>
+                <a href="del2.html">Deliverable 2</a>
+                <a href="team.html">Team</a>
+                <a href="method.html">Method</a>                
+            </nav>
+        </header>
+        <main>
+            <h1>Deliverable 2</h1>
+            <div id="map"></div>
+            <section id="searchResults" hidden>
+                <h3>Available Photos</h3>
+                <table id="jsonResults">
+                    <!-- table will be dynamically populated -->
+                </table>
+            </section>
+            <h2>What is Leaflet?</h2>
+            <p>Leaflet is a lightweight, open-source javascript mapping library. It is fast, easy
+                to use and learn, and very capable. It is also free-to-use and open source, with
+                a lot of community support and 3rd-party extensions that can be used. After reviewing
+                several options, it was selected as the web mapping library of choice for our project.
+            </p>
+            <h2>What is our process?</h2>
+            <p>We used GDAL to convert a GeoTIFF to COG. For exploration purposes, we attempted it in
+                both ArcGIS Pro and QGIS. We also developed a basic Leaflet application, and attempted
+                to get a few different image formats to load - COG, GeoTIFF, and a regular PNG.
+            </p>
+        </main>
+        <footer>
+            <p>copyright SEK Group 2022</p>
+        </footer>
+        <script src="javascript/del2-1.js"></script>
+    </body>
+</html>
