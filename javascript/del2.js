@@ -5,6 +5,49 @@
     This file adds a geoJson using JQuery
 */
 
+// These are the headers for the results table
+var headers = ["Photo ID","Photo Date","Scale"];
+
+// This function sets data into the results table. The first item should always be the identifier.
+function resultsTable(feature) {
+    data = {
+        data1: feature.properties.PHOTO_ID,        // set these to the geojson info you want
+        data2: feature.properties.Photo_Date,
+        data3: feature.properties.Scale
+    }
+    var table = $("#jsonResults");
+    var row = $("<tr>");
+    for(let x in data) {
+        if(data[x] === headers[0]) {
+            row.append($('<td>').text(data[x]));
+        }
+        else {
+            row.append($('<td>').text(data[x]));
+        }
+        table.append(row);
+    }
+    // table.appendChild(row);
+    // outputList.append('<input type="checkbox">')
+};
+// This function resets the results table
+function resetTable() {
+    resultsSection = $("#searchResults");
+    resultsSection.empty();
+    $('#resultsTitle').show();
+    var table = $('<table>').attr('id','jsonResults');
+    var tableHead = $('<tr>');
+    for (let title in headers) {    
+        tableHead.append($('<th>').text(headers[title]));
+    }
+    table.append(tableHead);
+    resultsSection.append(table);
+};
+function tableCSS() {
+    $('#jsonResults').css({"width":"50%","border-spacing":"0"});
+    $('th').css({"background-color":"Gainsboro","text-align":"left"});
+    $('td').css("border-bottom","solid 1px black");
+};
+
 // Add map baselayers
 const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -36,9 +79,12 @@ let photoJSON = L.geoJSON(null,{
     }
 }).addTo(map); // Variable to hold the GeoJSON data
 let sameJson;
-let outputList = $('#jsonResults'); // HTML ID to put the results into
 
-$.getJSON('../imagery/aerials.json', function(data) {
+let outputSection = document.getElementById("searchResults"); // html section for results
+// let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
+
+// Add the geoJSON
+$.getJSON('../imagery/aerialsCambium.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
@@ -70,7 +116,7 @@ var drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
-let userShape = null;
+var userShape = null;
 // save user drawn items as new layers in the layer group
 map.on('draw:created', function(e) {
     var layer = e.layer;
@@ -88,9 +134,7 @@ var ourCustomControl = L.Control.extend({
     },
     onAdd: function (map) {
         var container = L.DomUtil.create('button'); 
-
         container.innerText = 'Find Aerial Imagery';    // text for button
-        
         container.style.backgroundColor = 'white';      // styles for the button
         container.style.borderWidth = '2px';            // these options make it look like
         container.style.borderColor = '#b4b4b4';        // all of the other buttons that
@@ -102,23 +146,17 @@ var ourCustomControl = L.Control.extend({
 //Set the function of the button to check if the user input overlaps the aerials
         container.onclick = function(){             // when we click the button
             console.log('Pull the lever, Cronk.');   // display a message confirming the click
-            outputList.empty();
-            outputList.append('<h3>Available Photos</h3>'); // title for the list of results
+            resetTable();   // reset the table values
 
             if (userShape === null) {                  // if the user has not set an input
                 console.log('Wrong levaaaaAAAAAAHHHHH!!!!!!');       // return an error message
                 return;
             }
-            console.log('Test sameJson:',sameJson);
-            console.log('Test userShape:',userShape);
-            count = 0;
-            numResults = 0;
+            numResults = 0; // count number of results for error handling
             //iterate through the json and check if the polygons overlap the user input
             sameJson.features.forEach(function(feature) {
-                var properties = feature.properties;
                 var geometry = feature.geometry;
-                var item = feature.properties.Photo_ID
-                count +=1;
+                var item = feature.properties.PHOTO_ID;
 
                 // check for null values, skip if present
                 if(!geometry || !userShape) {
@@ -130,23 +168,23 @@ var ourCustomControl = L.Control.extend({
                     console.log('ERROR: Not a polygon: Photo',item);
                     return;
                 }
-
-                // console.log('How many features does it show?',count);
-                console.log('Photo ID:',feature.properties.Photo_ID);
-                
+                // console.log('Photo ID:',item);
                 var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
                 
                 if (overlap) {  // if the user polygon is fully within an aerial image, add it to the output list
-                    outputList.append('<input type="checkbox">')
-                    outputList.append('<label> ' + properties.Photo_ID + '</label></br>');
+                    resultsTable(feature);
                     numResults += 1;    // count the number of overlapping results
                 }
                 else {
-                    console.log('No overlap.'); // report if there is no overlap
+                    // console.log('No overlap.'); // report if there is no overlap
                 }
             });
-            if (numResults === 0) {
-                outputList.append('There are no photos in this area.');
+            if (numResults === 0) { // response if there are no photos
+                $('#searchResults').empty();
+                $('#searchResults').append('<p>There are no photos in this area.</p>');
+            }
+            else {
+                tableCSS();
             }
             console.log('numResults',numResults);
         }

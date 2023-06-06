@@ -15,45 +15,38 @@ function resultsTable(feature) {
         data2: feature.properties.Photo_Date,
         data3: feature.properties.Scale
     }
-    var table = document.getElementById("jsonResults");
-    var row = document.createElement("tr");
+    var table = $("#jsonResults");
+    var row = $("<tr>");
     for(let x in data) {
-        let tableCell = document.createElement("td");
-        row.appendChild(tableCell);
-        tableCell.textContent = data[x];
+        if(data[x] === headers[0]) {
+            row.append($('<td>').text(data[x]));
+        }
+        else {
+            row.append($('<td>').text(data[x]));
+        }
+        table.append(row);
     }
-    table.appendChild(row);
+    // table.appendChild(row);
     // outputList.append('<input type="checkbox">')
 };
 // This function resets the results table
 function resetTable() {
-    resultsSection = document.getElementById("searchResults");
-    resultsSection.removeAttribute("hidden");
-    var table = document.getElementById("jsonResults"); // find the table
-    table.innerHTML = "";                           // clear the table
-    var row = document.createElement("tr");         //create the header row
-    for (let title in headers) {                        // for each selected header
-        let tableCell = document.createElement("th");   // create a header item
-        row.appendChild(tableCell);                 // add the header item to the row
-        tableCell.textContent = headers[title];      // put the current header into the item
+    resultsSection = $("#searchResults");
+    resultsSection.empty();
+    $('#resultsTitle').show();
+    var table = $('<table>').attr('id','jsonResults');
+    var tableHead = $('<tr>');
+    for (let title in headers) {    
+        tableHead.append($('<th>').text(headers[title]));
     }
-    table.appendChild(row);     // add the headers to the table
+    table.append(tableHead);
+    resultsSection.append(table);
 };
 function tableCSS() {
-    var table = document.getElementById("jsonResults");
-    table.style.width = "50%";
-    table.style.borderSpacing = "0";
-    var head = table.getElementsByTagName("th");
-    for (var i = 0; i < head.length; i++) {
-        head[i].style.backgroundColor = "Gainsboro";
-        head[i].style.textAlign = "left";
-    }
-    var body = table.getElementsByTagName("td");
-    for (var i = 0; i < body.length; i++) {
-        body[i].style.borderBottom = "solid 1px black";
-    }
+    $('#jsonResults').css({"width":"50%","border-spacing":"0"});
+    $('th').css({"background-color":"Gainsboro","text-align":"left"});
+    $('td').css("border-bottom","solid 1px black");
 };
-
 
 // Add map baselayers
 const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -175,7 +168,7 @@ var ourCustomControl = L.Control.extend({
                     console.log('ERROR: Not a polygon: Photo',item);
                     return;
                 }
-                console.log('Photo ID:',item);
+                // console.log('Photo ID:',item);
                 var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
                 
                 if (overlap) {  // if the user polygon is fully within an aerial image, add it to the output list
@@ -183,16 +176,17 @@ var ourCustomControl = L.Control.extend({
                     numResults += 1;    // count the number of overlapping results
                 }
                 else {
-                    console.log('No overlap.'); // report if there is no overlap
+                    // console.log('No overlap.'); // report if there is no overlap
                 }
             });
             if (numResults === 0) { // response if there are no photos
-                let table = document.getElementById("jsonResults"); // find the table
-                table.innerHTML = ""; // empty the table
-                outputSection.append('There are no photos in this area.');
+                $('#searchResults').empty();
+                $('#searchResults').append('<p>There are no photos in this area.</p>');
+            }
+            else {
+                tableCSS();
             }
             console.log('numResults',numResults);
-            tableCSS();
         }
         return container;
     },
