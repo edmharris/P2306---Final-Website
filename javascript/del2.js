@@ -87,7 +87,7 @@ let outputSection = document.getElementById("searchResults"); // html section fo
 // let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
 
 // Add the geoJSON
-$.getJSON('../imagery/aerials.json', function(data) {
+$.getJSON('../imagery/aerialsCambium.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
