@@ -26,11 +26,9 @@ edited and added to by all contributors. That may change as time goes on, not re
         <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
         <!-- turf.js - for reading in user input -->
         <script src='javascript\lib\turf.min.js'></script>
-
-        <!-- georaster-layer-for-leaflet -->
-        <script src='javascript/lib/geotiff.js'></script>
-        
-
+        <!-- georaster layer for leaflet - for displaying our COGs -->
+        <script src="https://unpkg.com/georaster"></script>
+        <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
         <!-- Our site's CSS -->
         <link rel="stylesheet" href="stylesMain.css"/>
     </head>
@@ -46,7 +44,7 @@ edited and added to by all contributors. That may change as time goes on, not re
             </nav>
         </header>
         <main>
-            <h1>Deliverable 2</h1>
+            <h1>Deliverable 2 - Aerial Imagery Library</h1>
             <div id="map"></div>
             <h3 id='resultsTitle' hidden>Available Photos</h3>
             <section id="searchResults">

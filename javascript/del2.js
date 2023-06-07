@@ -5,42 +5,54 @@
     This file adds a geoJson using JQuery
 */
 
-// These are the headers for the results table; leave the first blank
-var headers = [" ","Photo ID","Photo Date","Scale"];
 
-// This function sets data into the results table. The first item should always be the identifier.
-function resultsTable(feature) {
-    data = [ " ",                           // leave this blank
-        feature.properties.PHOTO_ID,        // set these to the geojson info you want
+function userHeadings() {
+    // set the heading titles you would like displayed
+    var headers = [" ",         // leave this blank
+        "Photo ID",
+        "Photo Date",
+        "Scale"
+    ];
+    return headers;
+};
+function userSettings(feature) {
+    // select which data you would like to pull from the geojson
+    var data = [ " ",                         // leave this blank
+        feature.properties.PHOTO_ID,        // This is the unique identifier, and must align with the image
         feature.properties.Photo_Date,
         feature.properties.Scale
     ];
+    return data;
+};
+
+// This function sets data into the results table. The first item should always be the identifier.
+function resultsTable(feature) {
+    var display = userSettings(feature);
     var table = $("#jsonResults");
     var row = $("<tr>");
     var checkCell = $("<td>");
-    for(let x = 0; x < data.length; x++) {
+    for(let x = 0; x < display.length; x++) {
         if(x === 0) {
-            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+data[1]}).prop("checked",false);
+            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+display[1]}).prop("checked",false);
             checkCell.append(cBox);
             row.append(checkCell);
         }
         else {
-            row.append($('<td>').text(data[x]));
+            row.append($('<td>').text(display[x]));
         }
     }
     table.append(row);
-    // table.appendChild(row);
-    // outputList.append('<input type="checkbox">')
 };
 // This function resets the results table
-function resetTable() {
+function resetTable(feature) {
+    var display = userHeadings(feature);
     resultsSection = $("#searchResults");
     resultsSection.empty();
     $('#resultsTitle').show();
     var table = $('<table>').attr('id','jsonResults');
     var tableHead = $('<tr>');
-    for (let title in headers) {    
-        tableHead.append($('<th>').text(headers[title]));
+    for (let title in display.headers) {    
+        tableHead.append($('<th>').text(display.headers[title]));
     }
     table.append(tableHead);
     resultsSection.append(table);
@@ -81,7 +93,7 @@ let photoJSON = L.geoJSON(null,{
         }
     }
 }).addTo(map); // Variable to hold the GeoJSON data
-let sameJson;
+var sameJson;
 
 let outputSection = document.getElementById("searchResults"); // html section for results
 // let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
@@ -94,8 +106,8 @@ $.getJSON('../imagery/aerialsCambium.json', function(data) {
 
     // .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     sameJson.features.sort(function(a,b) { // sort the JSON so it shows up nicely
-        var propA = a.properties.PHOTO_ID;
-        var propB = b.properties.PHOTO_ID;
+        var propA = userSettings(a)[1];
+        var propB = userSettings(b)[1];
         return propA - propB;
     });
 });
@@ -153,13 +165,13 @@ var ourCustomControl = L.Control.extend({
 
             if (userShape === null) {                  // if the user has not set an input
                 console.log('Wrong levaaaaAAAAAAHHHHH!!!!!!');       // return an error message
-                return;
+                return; // skips the rest of the function, so that nothing else happens
             }
             numResults = 0; // count number of results for error handling
             //iterate through the json and check if the polygons overlap the user input
             sameJson.features.forEach(function(feature) {
                 var geometry = feature.geometry;
-                var item = feature.properties.PHOTO_ID;
+                var item = userSettings(feature)[1]; // set the item variable, so we can use it to post problems we find
 
                 // check for null values, skip if present
                 if(!geometry || !userShape) {
@@ -169,7 +181,7 @@ var ourCustomControl = L.Control.extend({
                 // check that geojson items are polygons
                 if(feature.geometry.type !== 'Polygon') {
                     console.log('ERROR: Not a polygon: Photo',item);
-                    return;
+                    return; // skip problem after logging
                 }
                 // console.log('Photo ID:',item);
                 var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
@@ -183,13 +195,13 @@ var ourCustomControl = L.Control.extend({
                 }
             });
             if (numResults === 0) { // response if there are no photos
-                $('#searchResults').empty();
-                $('#searchResults').append('<p>There are no photos in this area.</p>');
+                $('#searchResults').empty();    // clear the table we started to make
+                $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
             }
             else {
-                tableCSS();
+                tableCSS(); // apply styles to the new table
             }
-            console.log('numResults',numResults);
+            console.log('numResults',numResults); // share the number of results
         }
         return container;
     },

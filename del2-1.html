@@ -21,7 +21,7 @@
     
     <script>
       // initalize leaflet map
-      var map = L.map('map').setView([0, 0], 5);
+      var map = L.map('map').setView([44.6, -78.5], 5);
 
       // add OpenStreetMap basemap
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -46,6 +46,7 @@
             */
             var layer = new GeoRasterLayer({
                 georaster: georaster,
+                resolution: 200,
                 opacity: 1
             });
             layer.addTo(map);
