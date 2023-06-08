@@ -43,15 +43,15 @@ function resultsTable(feature) {
     table.append(row);
 };
 // This function resets the results table
-function resetTable(feature) {
-    var display = userHeadings(feature);
+function resetTable() {
+    var display = userHeadings();
     resultsSection = $("#searchResults");
     resultsSection.empty();
     $('#resultsTitle').show();
     var table = $('<table>').attr('id','jsonResults');
     var tableHead = $('<tr>');
-    for (let title in display.headers) {    
-        tableHead.append($('<th>').text(display.headers[title]));
+    for (let title in display) {    
+        tableHead.append($('<th>').text(display[title]));
     }
     table.append(tableHead);
     resultsSection.append(table);
@@ -98,7 +98,7 @@ let outputSection = document.getElementById("searchResults"); // html section fo
 // let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
 
 // Add the geoJSON
-$.getJSON('../imagery/aerialsCambium.json', function(data) {
+$.getJSON('../imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties

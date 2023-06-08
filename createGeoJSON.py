@@ -36,8 +36,10 @@ with open(csv_file_path, 'r') as csv_file:
 # Create a list to hold the GeoJSON features
 features = []
 
+# set the spatial reference for the coordinates
+sr = arcpy.SpatialReference(4326) #3857
 # Iterate through the shapefile records
-with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field]) as cursor:
+with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field],spatial_reference=sr) as cursor:
     for row in cursor:
         geometry = row[0]
         photo_id = row[1]
@@ -46,23 +48,26 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field]) as cu
 
         # Get the corresponding row from the CSV data
         csv_row = csv_dict.get(str(photo_id))
+        # print(csv_row)
         # get the corresponding file name from the image folder
         imgFile = None
-        for eachPic in glob.glob(os.path.join(img_file_path,str(photo_id)+'_*.tif')):  ############################################
-            imgFile = eachPic     
+        # for eachPic in glob.glob(os.path.join(img_file_path,str(photo_id)+'_*.tif')): 
+        #     imgFile = eachPic     
 
         if csv_row is not None:
+            # print("did this work")
             # Extract coordinates from the geometry
-            coordinates = list()
-            if geometry == None:
-                continue
-            elif geometry.type == "polygon":
-                for segment in geometry:
-                    for vertex in segment:
-                        coordinates.append([geometry.centroid.X, geometry.centroid.Y])
-            else:
-                # Handle other geometry types as needed
-                continue
+            coordinates = []
+           
+            print("first if")
+            for segment in geometry:
+                print("segment",segment)
+                seg_coords = []
+                for vertex in segment:
+                    seg_coords.append([vertex.Y,vertex.X])
+                    print(seg_coords)
+                coordinates.append(seg_coords)
+                print(coordinates)
 
             # construct the properties of the geoJSON feature
             properties = {
@@ -79,12 +84,13 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field]) as cu
             feature = {
                 "type": "Feature",
                 "geometry": {
-                    "type": "Point",
+                    "type": "Polygon",
                     "coordinates": coordinates
                 },
                 "properties": properties
             }
             features.append(feature)
+print(coordinates)
 
 # Create the GeoJSON structure
 geojson = {
@@ -97,4 +103,6 @@ geojson_str = json.dumps(geojson)
 # Save to a file
 with open(output_geojson_path, "w") as output_file:
     output_file.write(geojson_str)
+
+# print(coordinates)
 print("Process complete.")
