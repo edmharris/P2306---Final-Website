@@ -5,7 +5,6 @@
     This file adds a geoJson using JQuery
 */
 
-
 function userHeadings() {
     // set the heading titles you would like displayed
     var headers = [" ",         // leave this blank
@@ -232,6 +231,8 @@ $(document).on("change","input[type='checkbox']", function() {
     var cBoxStatus = $(this).prop("checked");
     if (cBoxStatus===true) {
         console.log("Checkbox "+cBoxID+" has been selected");
+        var imgName = $(this).parent().next().text();
+        console.log(imgName);
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");
