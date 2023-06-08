@@ -1,16 +1,22 @@
 import arcpy
 import csv
 import json
+import glob
 
 # Path to the shapefile
-shapefile_path = "D:/FlemSem3/Collab/Workflows/Airphoto Database/2023_AirphotoDatabase.shp"
+shapefile_path = "D:/FlemSem3/Collab/Workflows/Airphoto Database/2023_AirphotoDatabase.shp" ##################################
 
 # Path to the CSV file
-csv_file_path = "D:/FlemSem3/Collab/Workflows/Airphoto Database/2020AirPhotoDatabaseMasterUPDATED.csv"
+csv_file_path = "C:/Users/thens/Downloads/Trent.csv"
+
+# path to the geoTIFFs/COGs
+img_file_path = "C:/Users/thens/Downloads/TrentUniFreeTIFs"
+# create empy list to store the file names in
+tiffs = []
 
 # Field names in the shapefile and CSV file for joining
 shapefile_id_field = "PHOTO_ID"
-csv_id_field = "x"
+csv_id_field = "PHOTO_ID"
 
 # Path to the output GeoJSON file
 output_geojson_path = "D:/FlemSem3/Collab/P2306-Final-Website/imagery/aerialsPy.json"
@@ -20,7 +26,7 @@ csv_dict = {}
 with open(csv_file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     for row in reader:
-        csv_dict[row[csv_id_field]] = row
+        csv_dict[row[csv_id_field]] = row        
 
 # Create a list to hold the GeoJSON features
 features = []
@@ -30,17 +36,37 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field]) as cu
     for row in cursor:
         geometry = row[0]
         photo_id = row[1]
+        # print("photo id",photo_id)
+        # print("row: ",row)
 
         # Get the corresponding row from the CSV data
-        csv_row = csv_dict.get(photo_id)
+        csv_row = csv_dict.get(str(photo_id))
+        # get the corresponding file name from the image folder
+        imgFiles = glob.glob(img_file_path + '/'+csv_row+'_*.tif')  ############################################
+        print(imgFiles)
+        tiffs.append(imgFiles)
 
         if csv_row is not None:
             # Extract coordinates from the geometry
-            if geometry.type == "polygon":
-                coordinates = [geometry.centroid.X, geometry.centroid.Y]
+            coordinates = list()
+            if geometry == None:
+                continue
+            elif geometry.type == "polygon":
+                for segment in geometry:
+                    for vertex in segment:
+                        coordinates.append([geometry.centroid.X, geometry.centroid.Y])
             else:
                 # Handle other geometry types as needed
                 continue
+
+            # construct the properties of the geoJSON feature
+            properties = {
+                "PHOTO_ID":photo_id,
+            }
+            # add all other key-value pairs from the csv
+            for key,value in csv_row.items():
+                if key != csv_id_field:
+                    properties[key] = value
 
             # Construct the GeoJSON feature
             feature = {
@@ -49,12 +75,8 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field]) as cu
                     "type": "Point",
                     "coordinates": coordinates
                 },
-                "properties": {
-                    "PHOTO_ID": photo_id,
-                    "image": csv_row["ImageFileName"]
-                }
+                "properties": properties
             }
-
             features.append(feature)
 
 # Create the GeoJSON structure
