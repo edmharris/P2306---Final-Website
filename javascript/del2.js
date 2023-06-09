@@ -101,7 +101,7 @@ let outputSection = document.getElementById("searchResults"); // html section fo
 $.getJSON('imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
-    console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
+    // console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
 
     // .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     sameJson.features.sort(function(a,b) { // sort the JSON so it shows up nicely
@@ -233,8 +233,8 @@ $(document).on("change","input[type='checkbox']", function() {
     var cBoxStatus = $(this).prop("checked");
     if (cBoxStatus===true) {
         console.log("Checkbox "+cBoxID+" has been selected");
-        // var imgName = $(this).parent().next().text();
-        // console.log(imgName);
+        var imgName = $(this).parent().next().text();
+        console.log(imgName);
         var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
         console.log(imgPath);
         cogDisplay(imgPath);

@@ -29,6 +29,6 @@ fetch(url_to_geotiff_file)
       });
       layer.addTo(map);
 
-
+      map.fitBounds(layer.getBounds());
   });
 });
