@@ -190,6 +190,31 @@ var ourCustomControl = L.Control.extend({
                     resultsTable(feature);
                     // add a function call for image display
                     // iterate through the selected features and display all from filepath
+                    fetch(feature.properties.File_Name)
+                        .then(response => response.arrayBuffer())
+                        .then(arrayBuffer => {
+                        parseGeoraster(arrayBuffer).then(georaster => {
+                            console.log("georaster:", georaster);
+
+                            /*
+                                GeoRasterLayer is an extension of GridLayer,
+                                which means can use GridLayer options like opacity.
+
+                                Just make sure to include the georaster option!
+
+                                http://leafletjs.com/reference-1.2.0.html#gridlayer
+                            */
+                            var layer = new GeoRasterLayer({
+                                georaster: georaster,
+                                resolution: 200,
+                                opacity: 1
+                            });
+                            layer.addTo(map);
+                            console.log("Did it add the layer?",map.hasLayer(layer));
+
+                            // map.fitBounds(layer.getBounds());
+                        });
+                    });
                     // del2-1.html & imgTest.js - make an array of one set of images, and have it display them all
                     numResults += 1;    // count the number of overlapping results
                 }
