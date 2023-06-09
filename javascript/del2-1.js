@@ -221,6 +221,7 @@ function cogDisplay(url) {  // requires the path to the image
                 resolution: 200,
                 opacity: 1
             });
+            console.log(layer);
             layer.addTo(map);
 
         });
