@@ -188,6 +188,9 @@ var ourCustomControl = L.Control.extend({
                 
                 if (overlap) {  // if the user polygon is fully within an aerial image, add it to the output list
                     resultsTable(feature);
+                    // add a function call for image display
+                    // iterate through the selected features and display all from filepath
+                    // del2-1.html & imgTest.js - make an array of one set of images, and have it display them all
                     numResults += 1;    // count the number of overlapping results
                 }
                 else {
@@ -237,7 +240,7 @@ $(document).on("change","input[type='checkbox']", function() {
         console.log(imgName);
         var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
         console.log(imgPath);
-        cogDisplay(imgPath);
+        // cogDisplay(imgPath);
         
     }
     else {
