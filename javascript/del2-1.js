@@ -25,10 +25,11 @@ function userSettings(feature) {
 };
 
 // This function sets data into the results table. The first item should always be the identifier.
-function resultsTable(feature) {
-    var display = userSettings(feature);
+function resultsTable(geoJsonData) {
+    var display = userSettings(geoJsonData);
     var table = $("#jsonResults");
     var row = $("<tr>");
+    row.data("feature",geoJsonData);   // if I'm doing this right, this saves tihs geojson row to the table
     var checkCell = $("<td>");
     for(let x = 0; x < display.length; x++) {
         if(x === 0) {
@@ -85,7 +86,7 @@ const baseLayers = {
 const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
 
 // var showjson = L.FeatureGroup();
-let photoJSON = L.geoJSON(null,{
+var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
             color: 'purple'
@@ -231,9 +232,11 @@ $(document).on("change","input[type='checkbox']", function() {
     var cBoxStatus = $(this).prop("checked");
     if (cBoxStatus===true) {
         console.log("Checkbox "+cBoxID+" has been selected");
-        var imgName = $(this).parent().next().text();
-        console.log(imgName);
-
+        // var imgName = $(this).parent().next().text();
+        // console.log(imgName);
+        var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
+        console.log(imgPath);
+        cogDisplay(imgPath);
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");
