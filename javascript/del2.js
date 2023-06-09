@@ -5,13 +5,12 @@
     This file adds a geoJson using JQuery
 */
 
-
 function userHeadings() {
     // set the heading titles you would like displayed
     var headers = [" ",         // leave this blank
         "Photo ID",
         "Photo Date",
-        "Scale"
+        "File Name"
     ];
     return headers;
 };
@@ -20,16 +19,17 @@ function userSettings(feature) {
     var data = [ " ",                         // leave this blank
         feature.properties.PHOTO_ID,        // This is the unique identifier, and must align with the image
         feature.properties.Photo_Date,
-        feature.properties.Scale
+        feature.properties.File_Name
     ];
     return data;
 };
 
 // This function sets data into the results table. The first item should always be the identifier.
-function resultsTable(feature) {
-    var display = userSettings(feature);
+function resultsTable(geoJsonData) {
+    var display = userSettings(geoJsonData);
     var table = $("#jsonResults");
     var row = $("<tr>");
+    row.data("feature",geoJsonData);   // if I'm doing this right, this saves tihs geojson row to the table
     var checkCell = $("<td>");
     for(let x = 0; x < display.length; x++) {
         if(x === 0) {
@@ -44,15 +44,15 @@ function resultsTable(feature) {
     table.append(row);
 };
 // This function resets the results table
-function resetTable(feature) {
-    var display = userHeadings(feature);
+function resetTable() {
+    var display = userHeadings();
     resultsSection = $("#searchResults");
     resultsSection.empty();
     $('#resultsTitle').show();
     var table = $('<table>').attr('id','jsonResults');
     var tableHead = $('<tr>');
-    for (let title in display.headers) {    
-        tableHead.append($('<th>').text(display.headers[title]));
+    for (let title in display) {    
+        tableHead.append($('<th>').text(display[title]));
     }
     table.append(tableHead);
     resultsSection.append(table);
@@ -66,14 +66,14 @@ function tableCSS() {
 // Add map baselayers
 const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 });
 //Map declaration
 const map = L.map('map', {
-    center: [44.6, -78.5],
+    center: [44.6, -78],
     zoom: 8,
     layers: [Esri_WorldImagery,osm]            
 });
@@ -86,7 +86,7 @@ const baseLayers = {
 const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
 
 // var showjson = L.FeatureGroup();
-let photoJSON = L.geoJSON(null,{
+var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
             color: 'purple'
@@ -96,10 +96,9 @@ let photoJSON = L.geoJSON(null,{
 var sameJson;
 
 let outputSection = document.getElementById("searchResults"); // html section for results
-// let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
 
 // Add the geoJSON
-$.getJSON('../imagery/aerialsCambium.json', function(data) {
+$.getJSON('../imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
@@ -114,6 +113,7 @@ $.getJSON('../imagery/aerialsCambium.json', function(data) {
 baseControl.addOverlay(photoJSON,"Aerial Image Locations");
 
 var userIn = new L.FeatureGroup().addTo(map);  // variable to store user drawn inputs
+var showPhotos = new L.FeatureGroup().addTo(map); // stores the photos on the map later
 
 // add drawing control bar
 var drawControl = new L.Control.Draw({
@@ -207,3 +207,41 @@ var ourCustomControl = L.Control.extend({
     },
 });
 map.addControl(new ourCustomControl());
+
+// this function exists to display a Cloud-Optimized GeoTIFF on the map
+function cogDisplay(url) {  // requires the path to the image
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            parseGeoraster(arrayBuffer).then(georaster => {
+            console.log("georaster:", georaster);
+
+            var layer = new GeoRasterLayer({    // creates a new layer to display the raster on
+                georaster: georaster,
+                resolution: 200,
+                opacity: 1
+            });
+            console.log("Did it add the layer?",map.hasLayer(layer));
+            layer.addTo(map);
+            console.log("Did it add the layer?",map.hasLayer(layer));
+        });
+      });
+};
+//function to check if a box gets clicked
+$(document).on("change","input[type='checkbox']", function() {
+    var cBoxID = $(this).attr("id");
+    var cBoxStatus = $(this).prop("checked");
+    if (cBoxStatus===true) {
+        console.log("Checkbox "+cBoxID+" has been selected");
+        // var imgName = $(this).parent().next().text();
+        // console.log(imgName);
+        var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
+        console.log(imgPath);
+        cogDisplay(imgPath);
+        
+    }
+    else {
+        console.log("Checkbox "+cBoxID+" has been deselected");
+    }
+});
+//if clicked, check which is clicked, and pull the raster display function
