@@ -10,7 +10,7 @@ function userHeadings() {
     var headers = [" ",         // leave this blank
         "Photo ID",
         "Photo Date",
-        "Scale"
+        "File Name"
     ];
     return headers;
 };
@@ -19,7 +19,7 @@ function userSettings(feature) {
     var data = [ " ",                         // leave this blank
         feature.properties.PHOTO_ID,        // This is the unique identifier, and must align with the image
         feature.properties.Photo_Date,
-        feature.properties.Scale
+        feature.properties.File_Name
     ];
     return data;
 };
@@ -72,7 +72,7 @@ const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/re
 });
 //Map declaration
 const map = L.map('map', {
-    center: [44.6, -78.5],
+    center: [44.6, -78],
     zoom: 8,
     layers: [Esri_WorldImagery,osm]            
 });
@@ -233,6 +233,7 @@ $(document).on("change","input[type='checkbox']", function() {
         console.log("Checkbox "+cBoxID+" has been selected");
         var imgName = $(this).parent().next().text();
         console.log(imgName);
+
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");

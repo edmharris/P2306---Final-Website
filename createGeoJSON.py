@@ -51,8 +51,8 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field],spatia
         # print(csv_row)
         # get the corresponding file name from the image folder
         imgFile = None
-        # for eachPic in glob.glob(os.path.join(img_file_path,str(photo_id)+'_*.tif')): 
-        #     imgFile = eachPic     
+        for eachPic in glob.glob(os.path.join(img_file_path,str(photo_id)+'_*.tif')): 
+            imgFile = eachPic     
 
         if csv_row is not None:
             # print("did this work")
@@ -64,7 +64,7 @@ with arcpy.da.SearchCursor(shapefile_path, ["SHAPE@", shapefile_id_field],spatia
                 print("segment",segment)
                 seg_coords = []
                 for vertex in segment:
-                    seg_coords.append([vertex.Y,vertex.X])
+                    seg_coords.append([vertex.X,vertex.Y])
                     print(seg_coords)
                 coordinates.append(seg_coords)
                 print(coordinates)
