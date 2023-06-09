@@ -98,7 +98,7 @@ var sameJson;
 let outputSection = document.getElementById("searchResults"); // html section for results
 
 // Add the geoJSON
-$.getJSON('../imagery/aerialsPy.json', function(data) {
+$.getJSON('imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
     console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
