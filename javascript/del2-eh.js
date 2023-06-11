@@ -255,21 +255,38 @@ function cogDisplay(url) {  // requires the path to the image
         });
       });
 };
-//function to check if a box gets clicked
-$(document).on("change","input[type='checkbox']", function() {
+// Event listener for checkbox changes
+$(document).on("change", "input[type='checkbox']", function() {
     var cBoxID = $(this).attr("id");
     var cBoxStatus = $(this).prop("checked");
-    if (cBoxStatus===true) {
-        console.log("Checkbox "+cBoxID+" has been selected");
-        var imgName = $(this).parent().next().text();
-        console.log(imgName);
-        var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
-        console.log(imgPath);
-        // cogDisplay(imgPath);
+    
+    if (cBoxStatus === true) {
+      console.log("Checkbox " + cBoxID + " has been selected");
+      var imgName = $(this).parent().next().text();
+      console.log(imgName);
+      var imgPath = $(this).closest('tr').data('feature').properties.File_Name;
+      console.log(imgPath);
+      cogDisplay(imgPath); // Call the cogDisplay function with the image path
+    } else {
+      console.log("Checkbox " + cBoxID + " has been deselected");
+    }
+  });
+
+//function to check if a box gets clicked
+// $(document).on("change","input[type='checkbox']", function() {
+//     var cBoxID = $(this).attr("id");
+//     var cBoxStatus = $(this).prop("checked");
+//     if (cBoxStatus===true) {
+//         console.log("Checkbox "+cBoxID+" has been selected");
+//         var imgName = $(this).parent().next().text();
+//         console.log(imgName);
+//         var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
+//         console.log(imgPath);
+//         // cogDisplay(imgPath);
         
-    }
-    else {
-        console.log("Checkbox "+cBoxID+" has been deselected");
-    }
-});
+//     }
+//     else {
+//         console.log("Checkbox "+cBoxID+" has been deselected");
+//     }
+// });
 //if clicked, check which is clicked, and pull the raster display function
