@@ -264,7 +264,8 @@ $(document).on("change", "input[type='checkbox']", function() {
       console.log("Checkbox " + cBoxID + " has been selected");
       var imgName = $(this).parent().next().text();
       console.log(imgName);
-      var imgPath = $(this).closest('tr').data('feature').properties.File_Name;
+      var imgPath = "imagery/3857tifs/" + $(this).closest('tr').data('feature').properties.File_Name;
+    //   var imgPath = $(this).closest('tr').data('feature').properties.File_Name;
       console.log(imgPath);
       cogDisplay(imgPath); // Call the cogDisplay function with the image path
     } else {
