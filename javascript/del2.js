@@ -86,7 +86,21 @@ const baseLayers = {
     'Esri World Imagery': Esri_WorldImagery,
     'OpenStreetMap': osm
 };
-const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
+const baseControl = L.control.layers(baseLayers,null,{collapsed:true,position:'topleft'}).addTo(map);
+
+// add geosearch control
+var geocoder = L.Control.geocoder({
+    collapsed: false,       // keep it large
+    position: 'topright',   // put it in the upper right corner
+    defaultMarkGeocode: false
+}).on('markgeocode', function(result) {
+    const coords = [result.geocode.center.lat, result.geocode.center.lng]; 
+    var searchMarker = L.marker(coords, {
+        draggable: true //create draggable marker
+    }).addTo(map);
+    map.setView(coords,17); // move the map view to the searched location
+})
+.addTo(map);
 
 /*  because our image display uses GridLayer, we need to create a map pane to put the images in
     Then we set the z-index so that it displays where we need it
@@ -108,7 +122,7 @@ map.getPane('userPoly').style.zIndex = 300;
 var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
-            color: '#E26B0A'
+            color: 'purple'
         }
     },
     pane:'userPoly'
@@ -177,7 +191,7 @@ map.addControl(drawControl);
 var userShape = null;
 // save user drawn items as new layers in the layer group
 map.on('draw:created', function(e) {
-    e.layer.options.color = 'red';
+    e.layer.options.color = 'blue';
     var layer = e.layer;
     userIn.addLayer(layer);
 
