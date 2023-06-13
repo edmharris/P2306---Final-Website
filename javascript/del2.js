@@ -150,7 +150,7 @@ function showCog(url,itemID) {
           imgDisplay.addLayer(layer);
           leafID = layer._leaflet_id;
           console.log("LeafID in-function:",leafID)
-          Object.defineProperty(imgList,[itemID],{value:leafID});
+          Object.defineProperty(imgList,[itemID],{value:leafID,configurable: true});
           console.log("imgList from function:",imgList);
       });
     });

@@ -36,7 +36,7 @@ function resultsTable(geoJsonData) {
     var checkCell = $("<td>");
     for(let x = 0; x < display.length; x++) {
         if(x === 0) {
-            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+display[1]}).prop("checked",false);
+            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+display[1]}).prop("checked",true);
             checkCell.append(cBox);
             row.append(checkCell);
         }
@@ -108,7 +108,7 @@ map.getPane('userPoly').style.zIndex = 300;
 var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
-            color: 'blue'
+            color: '#E26B0A'
         }
     },
     pane:'userPoly'
@@ -150,7 +150,8 @@ function showCog(url,itemID) {
           imgDisplay.addLayer(layer);
           leafID = layer._leaflet_id;
           console.log("LeafID in-function:",leafID)
-          imgList[itemID] = leafID;
+          Object.defineProperty(imgList,[itemID],{value:leafID});
+          console.log("imgList from function:",imgList);
       });
     });
   };
@@ -233,7 +234,7 @@ var ourCustomControl = L.Control.extend({
                     // if the user polygon is fully within an aerial image, add it to the output list
                     resultsTable(feature);
                     // also, show all the images that are selected
-                    // showCog(jsonFilePath(feature),item);
+                    showCog(jsonFilePath(feature),item);
                     numResults += 1;    // count the number of overlapping results
                 }
                 else {
@@ -261,17 +262,22 @@ $(document).on("change","input[type='checkbox']", function() {
     if (cBoxStatus===true) {
         // if clicked, display the selected item, generate the layer ID, and add it to the map
         console.log("Checkbox "+cBoxID+" has been selected");
-        var imgPath = userSettings($(this).closest('tr').data('feature'))[3];
-        console.log(imgPath);
-        var itemNum = showCog(imgPath);
-        console.log("Leaflet ID =",itemNum);
+        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
+        console.log("remove layerID:",layerID);
+        console.log("imgList:",imgList)
+        if (imgList[layerID]) {
+            imgDisplay.addLayer(imgList[layerID]); //remove by layer id
+            console.log("image added...hopefully.")
+        }
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");
-        var layerID = "image_"+userSettings($(this).closest('tr').data('feature'))[1];
-        console.log(layerID);
+        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
+        console.log("remove layerID:",layerID);
+        console.log("imgList:",imgList)
         if (imgList[layerID]) {
-            
+            imgDisplay.removeLayer(imgList[layerID]); //remove by layer id
+            console.log("image removed...hopefully.")
         }
     }
 });
