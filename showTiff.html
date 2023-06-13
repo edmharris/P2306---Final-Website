@@ -45,26 +45,16 @@ edited and added to by all contributors. That may change as time goes on, not re
             </nav>
         </header>
         <main>
-            <h1>Deliverable 2 - Aerial Imagery Library</h1>
-            <div id="map"></div>
-            <h3 id='resultsTitle' hidden>Available Photos</h3>
-            <section id="searchResults">
-            </section>
-            <h2>What is Leaflet?</h2>
-            <p>Leaflet is a lightweight, open-source javascript mapping library. It is fast, easy
-                to use and learn, and very capable. It is also free-to-use and open source, with
-                a lot of community support and 3rd-party extensions that can be used. After reviewing
-                several options, it was selected as the web mapping library of choice for our project.
-            </p>
-            <h2>What is our process?</h2>
-            <p>We used GDAL to convert a GeoTIFF to COG. For exploration purposes, we attempted it in
-                both ArcGIS Pro and QGIS. We also developed a basic Leaflet application, and attempted
-                to get a few different image formats to load - COG, GeoTIFF, and a regular PNG.
-            </p>
+            <script>
+                var imagePath = window.opener.imgPath;
+                console.log(imagePath);
+                
+            </script>
         </main>
         <footer>
             <p>copyright SEK Group 2022</p>
         </footer>
-        <script src="javascript/del2-1.js"></script>
+        <!-- <script src="javascript/imgTest.js"></script> -->
+        <!-- <script src="imagery/aerialsCambium.json"></script> -->
     </body>
 </html>

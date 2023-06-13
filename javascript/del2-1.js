@@ -23,13 +23,16 @@ function userSettings(feature) {
     ];
     return data;
 };
-
+function jsonFilePath(geoJsonData) {
+    var path = geoJsonData.properties.File_Name;     // this must be set to the file path for the image, as in the json
+    return path;
+};
 // This function sets data into the results table. The first item should always be the identifier.
 function resultsTable(geoJsonData) {
     var display = userSettings(geoJsonData);
     var table = $("#jsonResults");
     var row = $("<tr>");
-    row.data("feature",geoJsonData);   // if I'm doing this right, this saves tihs geojson row to the table
+    row.data("feature",geoJsonData);   // this saves tihs geojson row to the table
     var checkCell = $("<td>");
     for(let x = 0; x < display.length; x++) {
         if(x === 0) {
@@ -92,11 +95,11 @@ var photoJSON = L.geoJSON(null,{
             color: 'purple'
         }
     }
-}).addTo(map); // Variable to hold the GeoJSON data
-var sameJson;
+}).addTo(map);
 
+// Variable to hold the GeoJSON data
+var sameJson;
 let outputSection = document.getElementById("searchResults"); // html section for results
-// let outputList = document.getElementById("jsonResults"); // HTML tablee to put the results into
 
 // Add the geoJSON
 $.getJSON('../imagery/aerialsPy.json', function(data) {
@@ -113,7 +116,40 @@ $.getJSON('../imagery/aerialsPy.json', function(data) {
 });
 baseControl.addOverlay(photoJSON,"Aerial Image Locations");
 
-var userIn = new L.FeatureGroup().addTo(map);  // variable to store user drawn inputs
+/*  because our image display uses GridLayer, we need to create a map pane to put the images in
+    Then we set the z-index so that it displays where we need it
+    see https://leafletjs.com/reference.html#map-pane
+    In this case, we want it above our polygons but below any pop-ups
+*/
+map.createPane('images');
+map.getPane('images').style.zIndex = 450;
+// Then we need to add the images to a group so we can find them again later
+var imgDisplay = new L.FeatureGroup({pane:'images'}).addTo(map);
+
+function showCog(url,ident) {
+    fetch(url)
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => {
+        parseGeoraster(arrayBuffer).then(georaster => {
+          console.log("georaster:", georaster);
+          var layer = new GeoRasterLayer({
+              georaster: georaster,
+              resolution: 200,
+              opacity: 1,
+              pane:'images'
+          });
+          layer.imageID = "image_"+ident;
+          imgDisplay.addLayer(layer);
+      });
+    });
+  };
+
+//  since we want the user's polygon to remain on top, we need a pane for it too
+//  We want it above the images, but below other visuals
+map.createPane('userPoly');
+map.getPane('userPoly').style.zIndex = 475;
+
+var userIn = new L.FeatureGroup({pane:'userPoly'}).addTo(map);  // variable to store user drawn inputs
 
 // add drawing control bar
 var drawControl = new L.Control.Draw({
@@ -186,7 +222,8 @@ var ourCustomControl = L.Control.extend({
                 // console.log('Photo ID:',item);
                 var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
                 
-                if (overlap) {  // if the user polygon is fully within an aerial image, add it to the output list
+                if (overlap) { 
+                    // if the user polygon is fully within an aerial image, add it to the output list
                     resultsTable(feature);
                     numResults += 1;    // count the number of overlapping results
                 }
@@ -208,39 +245,30 @@ var ourCustomControl = L.Control.extend({
 });
 map.addControl(new ourCustomControl());
 
-// this function exists to display a Cloud-Optimized GeoTIFF on the map
-function cogDisplay(url) {  // requires the path to the image
-    fetch(url)
-        .then(response => response.arrayBuffer())
-        .then(arrayBuffer => {
-            parseGeoraster(arrayBuffer).then(georaster => {
-            console.log("georaster:", georaster);
-
-            var layer = new GeoRasterLayer({    // creates a new layer to display the raster on
-                georaster: georaster,
-                resolution: 200,
-                opacity: 1
-            });
-            console.log(layer);
-            layer.addTo(map);
-
-        });
-      });
-};
 //function to check if a box gets clicked
 $(document).on("change","input[type='checkbox']", function() {
     var cBoxID = $(this).attr("id");
     var cBoxStatus = $(this).prop("checked");
     if (cBoxStatus===true) {
+        // if clicked, display the selected item, generate the layer ID, and add it to the map
         console.log("Checkbox "+cBoxID+" has been selected");
-        // var imgName = $(this).parent().next().text();
-        // console.log(imgName);
-        var imgPath = ($(this).closest('tr').data('feature')).properties.File_Name;
-        console.log(imgPath);
-        cogDisplay(imgPath);
+        var layerID = "image_"+userSettings($(this).closest('tr').data('feature'))[1];
+        console.log(layerID);
+        console.log(map.getPane('images'));
+        // also, show all the images that are selected
+        var imgPath = userSettings($(this).closest('tr').data('feature'))[3];
+        showCog(imgPath,layerID);
+        // showImage(imgDisplay,layerID);
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");
+        var layerID = "image_"+userSettings($(this).closest('tr').data('feature'))[1];
+        console.log(layerID);
+        imgDisplay.eachLayer(function(layer) {
+            if (layer.imageID === layerID) {
+                imgDisplay.removeLayer(layer);
+            }
+        });
     }
 });
 //if clicked, check which is clicked, and pull the raster display function

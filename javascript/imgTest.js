@@ -1,12 +1,12 @@
-// initalize leaflet map
-var map = L.map('map').setView([44.6, -78], 8);
+// // initalize leaflet map
+// var map = L.map('map').setView([44.6, -78], 8);
 
-// add OpenStreetMap basemap
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+// // add OpenStreetMap basemap
+// L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+//     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+// }).addTo(map);
 
-var photoArray = ["imagery/14_A17851-133_cog_web_mercator.tif","imagery/13_A18252-070_cog_web_mercator.tif"];
+var photoArray = ["imagery/3857tifs/13_A18252-070_cog_web_mercator.tif"];
 
 for (x in photoArray) {
   fetch(photoArray[x])
@@ -30,7 +30,7 @@ for (x in photoArray) {
         });
         layer.addTo(map);
 
-        // map.fitBounds(layer.getBounds());
+        map.fitBounds(layer.getBounds());
     });
   });
 };

@@ -108,7 +108,7 @@ map.getPane('userPoly').style.zIndex = 300;
 var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
-            color: '#E26B0A'
+            color: 'blue'
         }
     },
     pane:'userPoly'
@@ -150,8 +150,7 @@ function showCog(url,itemID) {
           imgDisplay.addLayer(layer);
           leafID = layer._leaflet_id;
           console.log("LeafID in-function:",leafID)
-          Object.defineProperty(imgList,[itemID],{value:leafID});
-          console.log("imgList from function:",imgList);
+          imgList[itemID] = leafID;
       });
     });
   };
@@ -263,19 +262,16 @@ $(document).on("change","input[type='checkbox']", function() {
         // if clicked, display the selected item, generate the layer ID, and add it to the map
         console.log("Checkbox "+cBoxID+" has been selected");
         var imgPath = userSettings($(this).closest('tr').data('feature'))[3];
-        var imgNumber = userSettings($(this).closest('tr').data('feature'))[1];
         console.log(imgPath);
-        var itemNum = showCog(imgPath,imgNumber);
+        var itemNum = showCog(imgPath);
         console.log("Leaflet ID =",itemNum);
     }
     else {
         console.log("Checkbox "+cBoxID+" has been deselected");
-        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
-        console.log("remove layerID:",layerID);
-        console.log("imgList:",imgList)
+        var layerID = "image_"+userSettings($(this).closest('tr').data('feature'))[1];
+        console.log(layerID);
         if (imgList[layerID]) {
-            imgDisplay.removeLayer(imgList[layerID]); //remove by layer id
-            console.log("image removed...hopefully.")
+            
         }
     }
 });

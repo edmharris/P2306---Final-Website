@@ -13,11 +13,11 @@ print("Shapefile absolute path: ",shapefile_path)
 
 # Path to the CSV file
 csv_file_path = os.path.join(current_directory,"imagery","TrentData.csv") # change path and csv name as required
-print("Shapefile absolute path:", csv_file_path)
+print("CSV absolute path:", csv_file_path)
 
 # path to the geoTIFFs/COGs
-img_file_path = os.path.relpath("imagery")  # change to the folder where the images are
-print("Shapefile absolute path:",img_file_path)
+img_file_path = os.path.relpath("imagery/3857tifs")  # change to the folder where the images are
+print("Image relative path:",img_file_path)
 
 # Field names in the shapefile and CSV file for joining
 shapefile_id_field = "PHOTO_ID"
