@@ -1,57 +1,64 @@
+<!--
+Collaborative Project 2306 - Website for Open House
+Created by Stephen VanDam, Kamryn Sandiford, Ewan Harris
+This file is intended for use as the final submission for the Collaborative Project Open House,
+edited and added to by all contributors. That may change as time goes on, not really a big deal.
+-->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"/>
-    <style>
-      #map {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/proj4"></script>
-    <script src="https://unpkg.com/georaster"></script>
-    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
-    <script>
-      // initalize leaflet map
-      var map = L.map('map').setView([0, 0], 5);
-
-      // add OpenStreetMap basemap
-      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-
-      var url_to_geotiff_file = "imagery/NOTFORGITHUB/c1437_PH_web.tif";
-
-      parseGeoraster(url_to_geotiff_file).then(georaster => {
-        console.log("georaster:", georaster);
-
-        /*
-            GeoRasterLayer is an extension of GridLayer,
-            which means can use GridLayer options like opacity.
-
-            Just make sure to include the georaster option!
-
-            http://leafletjs.com/reference-1.2.0.html#gridlayer
-        */
-        var layer = new GeoRasterLayer({
-            attribution: "Planet",
-            georaster: georaster,
-            resolution: 128
-        });
-        layer.addTo(map);
-
-        map.fitBounds(layer.getBounds());
-
-    });
-
-    </script>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+        <title>Deliverable 2 - Project 2306 - Cambium Inc.</title>
+        <!-- leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""/>
+        <!-- geocoding stylesheet -->
+        <link rel="stylesheet"
+        href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+        <!-- leaflet javascript library -->
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+            crossorigin="">
+        </script>
+        <!-- add JQuery -->
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+        <!-- <script src="javascript\lib\jquery.min.js"></script> -->
+        <!-- geocoder javascript -->
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js">
+        </script>
+        <!-- Leaflet Draw -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+        <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+        <!-- turf.js - for reading in user input -->
+        <script src='javascript\lib\turf.min.js'></script>
+        <!-- georaster layer for leaflet - for displaying our COGs -->
+        <script src="https://unpkg.com/georaster"></script>
+        <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+        <!-- Our site's CSS -->
+        <link rel="stylesheet" href="stylesSecond.css"/>
+    </head>
+    <body>
+        <header>
+            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="del1.html">Deliverable 1</a>
+                <a href="del2.html">Deliverable 2</a>
+                <a href="team.html">Team</a>
+                <a href="method.html">Method</a>                
+            </nav>
+        </header>
+        <main>
+            <div id="map"></div>
+            <h3 id='resultsTitle' hidden>Available Photos</h3>
+            <section id="searchResults">
+            </section>
+        </main>
+        <footer>
+            <p>copyright SEK Group 2022</p>
+        </footer>
+        <script src="javascript/del2.js"></script>
+    </body>
 </html>
