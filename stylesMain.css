@@ -16,8 +16,9 @@ html,body {
 }
 body {
     min-height: 100vh;
+    min-width: 100vw;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* elements in the body go top to bottom*/
 }
 header {
     display: flex;
@@ -50,11 +51,12 @@ nav a:hover {
 }
 main {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* elements within main go top to bottom */
     margin-top: 7.5vh;
     margin-left: 1vw;
     margin-right: 1vw;
     margin-bottom: 30px;
+    min-width: 100vw;
 }
 figure {
     display: flex;
@@ -103,7 +105,7 @@ ul {
 #cambiumLogo {
     float: left;
 }
-#map {height: 600px; }
+
 #S {
     color:#1B8F3D;
 }

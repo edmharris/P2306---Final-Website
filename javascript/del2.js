@@ -61,7 +61,7 @@ function resetTable() {
     resultsSection.append(table);
 };
 function tableCSS() {
-    $('#jsonResults').css({"width":"50%","border-spacing":"0"});
+    $('#jsonResults').css({"width":"100%","border-spacing":"0"});
     $('th').css({"background-color":"Gainsboro","text-align":"left"});
     $('td').css("border-bottom","solid 1px black");
 };
@@ -90,8 +90,8 @@ const baseControl = L.control.layers(baseLayers,null,{collapsed:true,position:'t
 
 // add geosearch control
 var geocoder = L.Control.geocoder({
-    collapsed: false,       // keep it large
-    position: 'topright',   // put it in the upper right corner
+    collapsed: true,       // keep it large
+    position: 'topleft',   // put it in the upper right corner
     defaultMarkGeocode: false
 }).on('markgeocode', function(result) {
     const coords = [result.geocode.center.lat, result.geocode.center.lng]; 
@@ -203,18 +203,18 @@ map.on('draw:created', function(e) {
 // add a button to summon photos on a drawn layer or point
 var ourCustomControl = L.Control.extend({
     options: {
-        position: 'topright'
+        position: 'topleft'
     },
     onAdd: function (map) {
         var container = L.DomUtil.create('button'); 
-        container.innerText = 'Find Aerial Imagery';    // text for button
+        container.innerText = 'Find\nAerial\nImagery';    // text for button
         container.style.backgroundColor = 'white';      // styles for the button
         container.style.borderWidth = '2px';            // these options make it look like
         container.style.borderColor = '#b4b4b4';        // all of the other buttons that
         container.style.borderRadius = '5px';           // are already there
         container.style.borderStyle = 'solid';
-        container.style.width = '140px';
-        container.style.height = '30px';
+        container.style.width = '65px';
+        container.style.height = '60px';
         
 //Set the function of the button to check if the user input overlaps the aerials
         container.onclick = function(){             // when we click the button
@@ -223,46 +223,50 @@ var ourCustomControl = L.Control.extend({
 
             if (userShape === null) {                  // if the user has not set an input
                 console.log('Wrong levaaaaAAAAAAHHHHH!!!!!!');       // return an error message
+                $('#searchResults').empty();
+                $('#searchResults').append('<p>Please select an area to search.</p>');
                 return; // skips the rest of the function, so that nothing else happens
             }
-            numResults = 0; // count number of results for error handling
-            //iterate through the json and check if the polygons overlap the user input
-            sameJson.features.forEach(function(feature) {
-                var geometry = feature.geometry;
-                var item = userSettings(feature)[1]; // set the item variable, so we can use it to post problems we find
+            else {
+                numResults = 0; // count number of results for error handling
+                //iterate through the json and check if the polygons overlap the user input
+                sameJson.features.forEach(function(feature) {
+                    var geometry = feature.geometry;
+                    var item = userSettings(feature)[1]; // set the item variable, so we can use it to post problems we find
 
-                // check for null values, skip if present
-                if(!geometry || !userShape) {
-                    console.log('ERROR: Invalid geometry or userShape on Photo',item);
-                    return; // skip if either item is null
-                }
-                // check that geojson items are polygons
-                if(feature.geometry.type !== 'Polygon') {
-                    console.log('ERROR: Not a polygon: Photo',item);
-                    return; // skip problem after logging
-                }
-                // console.log('Photo ID:',item);
-                var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
-                
-                if (overlap) { 
-                    // if the user polygon is fully within an aerial image, add it to the output list
-                    resultsTable(feature);
-                    // also, show all the images that are selected
-                    // showCog(jsonFilePath(feature),item);
-                    numResults += 1;    // count the number of overlapping results
+                    // check for null values, skip if present
+                    if(!geometry || !userShape) {
+                        console.log('ERROR: Invalid geometry or userShape on Photo',item);
+                        return; // skip if either item is null
+                    }
+                    // check that geojson items are polygons
+                    if(feature.geometry.type !== 'Polygon') {
+                        console.log('ERROR: Not a polygon: Photo',item);
+                        return; // skip problem after logging
+                    }
+                    // console.log('Photo ID:',item);
+                    var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
+                    
+                    if (overlap) { 
+                        // if the user polygon is fully within an aerial image, add it to the output list
+                        resultsTable(feature);
+                        // also, show all the images that are selected
+                        // showCog(jsonFilePath(feature),item);
+                        numResults += 1;    // count the number of overlapping results
+                    }
+                    else {
+                        // console.log('No overlap.'); // report if there is no overlap
+                    }
+                });
+                if (numResults === 0) { // response if there are no photos
+                    $('#searchResults').empty();    // clear the table we started to make
+                    $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
                 }
                 else {
-                    // console.log('No overlap.'); // report if there is no overlap
+                    tableCSS(); // apply styles to the new table
                 }
-            });
-            if (numResults === 0) { // response if there are no photos
-                $('#searchResults').empty();    // clear the table we started to make
-                $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
+                console.log('numResults',numResults); // share the number of results
             }
-            else {
-                tableCSS(); // apply styles to the new table
-            }
-            console.log('numResults',numResults); // share the number of results
         }
         return container;
     },
