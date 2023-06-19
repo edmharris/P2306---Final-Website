@@ -88,6 +88,20 @@ const baseLayers = {
 };
 const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
 
+// add geosearch control
+var geocoder = L.Control.geocoder({
+    collapsed: false,       // keep it large
+    position: 'topright',   // put it in the upper right corner
+    defaultMarkGeocode: false
+}).on('markgeocode', function(result) {
+    const coords = [result.geocode.center.lat, result.geocode.center.lng]; 
+    var searchMarker = L.marker(coords, {
+        draggable: true //create draggable marker
+    }).addTo(map);
+    map.setView(coords,17); // move the map view to the searched location
+})
+.addTo(map);
+
 // var showjson = L.FeatureGroup();
 var photoJSON = L.geoJSON(null,{
     style: function(feature) {
@@ -159,7 +173,7 @@ var drawControl = new L.Control.Draw({
         rectangle: false,
         circle: false,
         circlemarker: false,
-        marker: false,
+        marker: true,
     },
     edit: {
         featureGroup: userIn
@@ -170,6 +184,7 @@ map.addControl(drawControl);
 var userShape = null;
 // save user drawn items as new layers in the layer group
 map.on('draw:created', function(e) {
+    e.layer.options.color = 'red';
     var layer = e.layer;
     userIn.addLayer(layer);
 

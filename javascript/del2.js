@@ -36,7 +36,7 @@ function resultsTable(geoJsonData) {
     var checkCell = $("<td>");
     for(let x = 0; x < display.length; x++) {
         if(x === 0) {
-            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+display[1]}).prop("checked",false);
+            var cBox = $('<input>').attr({type:"checkbox",id:'cbox'+display[1]}).prop("checked",true);
             checkCell.append(cBox);
             row.append(checkCell);
         }
@@ -76,22 +76,23 @@ const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/re
 });
 //Map declaration
 const map = L.map('map', {
-    center: [44.6, -78],
+    zoomControl: false,
+    center: [44.8, -77.6],
     zoom: 8,
     layers: [Esri_WorldImagery,osm]            
 });
+
 // Add baselayer info as array for layer control, control added lower to put it
 // below the search bar
 const baseLayers = {
     'Esri World Imagery': Esri_WorldImagery,
     'OpenStreetMap': osm
 };
-const baseControl = L.control.layers(baseLayers,null,{collapsed:true,position:'topleft'}).addTo(map);
 
 // add geosearch control
 var geocoder = L.Control.geocoder({
-    collapsed: true,       // keep it large
-    position: 'topleft',   // put it in the upper right corner
+    collapsed: false,       // keep it large
+    position: 'topright',   // put it in the upper right corner
     defaultMarkGeocode: false
 }).on('markgeocode', function(result) {
     const coords = [result.geocode.center.lat, result.geocode.center.lng]; 
@@ -101,6 +102,11 @@ var geocoder = L.Control.geocoder({
     map.setView(coords,17); // move the map view to the searched location
 })
 .addTo(map);
+
+// add control for the basemaps and the air photo polygons
+const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topright'}).addTo(map);
+// add zoom controls below the baseControl
+L.control.zoom({position: 'topright'}).addTo(map);
 
 /*  because our image display uses GridLayer, we need to create a map pane to put the images in
     Then we set the z-index so that it displays where we need it
@@ -136,7 +142,7 @@ let outputSection = document.getElementById("searchResults"); // html section fo
 $.getJSON('imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
-    console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
+    // console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
 
     // .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     sameJson.features.sort(function(a,b) { // sort the JSON so it shows up nicely
@@ -163,9 +169,9 @@ function showCog(url,itemID) {
           });
           imgDisplay.addLayer(layer);
           leafID = layer._leaflet_id;
-          console.log("LeafID in-function:",leafID)
+        //   console.log("LeafID in-function:",leafID)
           Object.defineProperty(imgList,[itemID],{value:leafID,configurable: true});
-          console.log("imgList from function:",imgList);
+        //   console.log("imgList from function:",imgList);
       });
     });
   };
@@ -174,6 +180,7 @@ var userIn = new L.FeatureGroup({pane:'userPoly'}).addTo(map);  // variable to s
 
 // add drawing control bar
 var drawControl = new L.Control.Draw({
+    position: 'topright',
     draw: {
         polygon: true,
         polyline: false,
@@ -191,28 +198,31 @@ map.addControl(drawControl);
 var userShape = null;
 // save user drawn items as new layers in the layer group
 map.on('draw:created', function(e) {
-    e.layer.options.color = 'blue';
+    e.layer.options.color = 'orange'; // line colour
+    e.layer.options.weight = 4;     // line thickness
+    e.layer.options.opacity = 1;    // line opacity
+    e.layer.options.fill = false;   // hollow polygon
     var layer = e.layer;
-    userIn.addLayer(layer);
+    userIn.addLayer(layer);     // add to the feature group
 
     //save the polygon to GeoJSON for later analysis
     userShape = layer.toGeoJSON();
-    console.log('User Input: ',userShape);
+    // console.log('User Input: ',userShape);
 });
 
 // add a button to summon photos on a drawn layer or point
 var ourCustomControl = L.Control.extend({
     options: {
-        position: 'topleft'
+        position: 'topright'
     },
     onAdd: function (map) {
         var container = L.DomUtil.create('button'); 
         container.innerText = 'Find\nAerial\nImagery';    // text for button
         container.style.backgroundColor = 'white';      // styles for the button
-        container.style.borderWidth = '2px';            // these options make it look like
-        container.style.borderColor = '#b4b4b4';        // all of the other buttons that
-        container.style.borderRadius = '5px';           // are already there
-        container.style.borderStyle = 'solid';
+        container.style.borderWidth = '2px';
+        container.style.borderColor = '#b4b4b4';        // these options make it look like
+        container.style.borderRadius = '5px';           // all of the other buttons that
+        container.style.borderStyle = 'solid';          // are already there
         container.style.width = '65px';
         container.style.height = '60px';
         
@@ -226,8 +236,7 @@ var ourCustomControl = L.Control.extend({
                 $('#searchResults').empty();
                 $('#searchResults').append('<p>Please select an area to search.</p>');
                 return; // skips the rest of the function, so that nothing else happens
-            }
-            else {
+            } else {
                 numResults = 0; // count number of results for error handling
                 //iterate through the json and check if the polygons overlap the user input
                 sameJson.features.forEach(function(feature) {
@@ -251,18 +260,17 @@ var ourCustomControl = L.Control.extend({
                         // if the user polygon is fully within an aerial image, add it to the output list
                         resultsTable(feature);
                         // also, show all the images that are selected
-                        // showCog(jsonFilePath(feature),item);
+                        console.log("image ID =",item); // report which image is getting displayed
+                        showCog(jsonFilePath(feature),item);
                         numResults += 1;    // count the number of overlapping results
-                    }
-                    else {
+                    } else {
                         // console.log('No overlap.'); // report if there is no overlap
                     }
                 });
                 if (numResults === 0) { // response if there are no photos
                     $('#searchResults').empty();    // clear the table we started to make
                     $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
-                }
-                else {
+                } else {
                     tableCSS(); // apply styles to the new table
                 }
                 console.log('numResults',numResults); // share the number of results
@@ -273,28 +281,24 @@ var ourCustomControl = L.Control.extend({
 });
 map.addControl(new ourCustomControl());
 
-//function to check if a box gets clicked
+// function to use the checkbox to turn an image on or off on the display
 $(document).on("change","input[type='checkbox']", function() {
-    var cBoxID = $(this).attr("id");
-    var cBoxStatus = $(this).prop("checked");
+    var cBoxID = $(this).attr("id");    // the id of this checkbox
+    var layerID = userSettings($(this).closest('tr').data('feature'))[1]; // 
+    console.log("checkbox ID is", cBoxID,"and the layerID is",layerID);
+    var cBoxStatus = $(this).prop("checked"); // checks the check status of the checkbox
+    var thisImage = imgDisplay.getLayer(imgList[layerID]); // searches the list of visible images and selects the one associated with this checkbox
+    console.log("does the image exist?",imgDisplay.hasLayer(imgList[layerID])); // confirms that the image exists in the feature group
     if (cBoxStatus===true) {
-        // if clicked, display the selected item, generate the layer ID, and add it to the map
-        console.log("Checkbox "+cBoxID+" has been selected");
-        var imgPath = userSettings($(this).closest('tr').data('feature'))[3];
-        var imgNumber = userSettings($(this).closest('tr').data('feature'))[1];
-        console.log(imgPath);
-        var itemNum = showCog(imgPath,imgNumber);
-        console.log("Leaflet ID =",itemNum);
-    }
-    else {
-        console.log("Checkbox "+cBoxID+" has been deselected");
-        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
-        console.log("remove layerID:",layerID);
-        console.log("imgList:",imgList)
-        if (imgList[layerID]) {
-            imgDisplay.removeLayer(imgList[layerID]); //remove by layer id
-            console.log("image removed...hopefully.")
-        }
+        // make the selected image visible
+        console.log("Checkbox",cBoxID,"has been selected.");
+        thisImage.setOpacity(1);
+        thisImage.bringToFront();
+    } else {
+        // make the selected image invisible
+        console.log("Checkbox",cBoxID,"has been deselected.");
+        console.log("This image is:",thisImage);
+        thisImage.setOpacity(0);
+
     }
 });
-//if clicked, check which is clicked, and pull the raster display function

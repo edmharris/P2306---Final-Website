@@ -61,7 +61,7 @@ function resetTable() {
     resultsSection.append(table);
 };
 function tableCSS() {
-    $('#jsonResults').css({"width":"50%","border-spacing":"0"});
+    $('#jsonResults').css({"width":"100%","border-spacing":"0"});
     $('th').css({"background-color":"Gainsboro","text-align":"left"});
     $('td').css("border-bottom","solid 1px black");
 };
@@ -76,17 +76,37 @@ const Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/re
 });
 //Map declaration
 const map = L.map('map', {
-    center: [44.6, -78],
+    zoomControl: false,
+    center: [44.8, -77.6],
     zoom: 8,
     layers: [Esri_WorldImagery,osm]            
 });
+
 // Add baselayer info as array for layer control, control added lower to put it
 // below the search bar
 const baseLayers = {
     'Esri World Imagery': Esri_WorldImagery,
     'OpenStreetMap': osm
 };
-const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topleft'}).addTo(map);
+
+// add geosearch control
+var geocoder = L.Control.geocoder({
+    collapsed: false,       // keep it large
+    position: 'topright',   // put it in the upper right corner
+    defaultMarkGeocode: false
+}).on('markgeocode', function(result) {
+    const coords = [result.geocode.center.lat, result.geocode.center.lng]; 
+    var searchMarker = L.marker(coords, {
+        draggable: true //create draggable marker
+    }).addTo(map);
+    map.setView(coords,17); // move the map view to the searched location
+})
+.addTo(map);
+
+// add control for the basemaps and the air photo polygons
+const baseControl = L.control.layers(baseLayers,null,{collapsed:false,position:'topright'}).addTo(map);
+// add zoom controls below the baseControl
+L.control.zoom({position: 'topright'}).addTo(map);
 
 /*  because our image display uses GridLayer, we need to create a map pane to put the images in
     Then we set the z-index so that it displays where we need it
@@ -108,7 +128,7 @@ map.getPane('userPoly').style.zIndex = 300;
 var photoJSON = L.geoJSON(null,{
     style: function(feature) {
         return {
-            color: '#E26B0A'
+            color: 'purple'
         }
     },
     pane:'userPoly'
@@ -119,10 +139,10 @@ var sameJson;
 let outputSection = document.getElementById("searchResults"); // html section for results
 
 // Add the geoJSON
-$.getJSON('../imagery/aerialsPy.json', function(data) {
+$.getJSON('imagery/aerialsPy.json', function(data) {
     photoJSON.addData(data);
     sameJson = data;
-    console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
+    // console.log(sameJson.features[1].properties) // for troubleshooting and viewing properties
 
     // .sort() orders by putting the lower number first, so if A - B is negative, A preceeds, if positive, B preceeds, if 0 they are equal
     sameJson.features.sort(function(a,b) { // sort the JSON so it shows up nicely
@@ -149,9 +169,9 @@ function showCog(url,itemID) {
           });
           imgDisplay.addLayer(layer);
           leafID = layer._leaflet_id;
-          console.log("LeafID in-function:",leafID)
-          Object.defineProperty(imgList,[itemID],{value:leafID});
-          console.log("imgList from function:",imgList);
+        //   console.log("LeafID in-function:",leafID)
+          Object.defineProperty(imgList,[itemID],{value:leafID,configurable: true});
+        //   console.log("imgList from function:",imgList);
       });
     });
   };
@@ -160,6 +180,7 @@ var userIn = new L.FeatureGroup({pane:'userPoly'}).addTo(map);  // variable to s
 
 // add drawing control bar
 var drawControl = new L.Control.Draw({
+    position: 'topright',
     draw: {
         polygon: true,
         polyline: false,
@@ -177,13 +198,16 @@ map.addControl(drawControl);
 var userShape = null;
 // save user drawn items as new layers in the layer group
 map.on('draw:created', function(e) {
-    e.layer.options.color = 'red';
+    e.layer.options.color = 'orange'; // line colour
+    e.layer.options.weight = 4;     // line thickness
+    e.layer.options.opacity = 1;    // line opacity
+    e.layer.options.fill = false;   // hollow polygon
     var layer = e.layer;
-    userIn.addLayer(layer);
+    userIn.addLayer(layer);     // add to the feature group
 
     //save the polygon to GeoJSON for later analysis
     userShape = layer.toGeoJSON();
-    console.log('User Input: ',userShape);
+    // console.log('User Input: ',userShape);
 });
 
 // add a button to summon photos on a drawn layer or point
@@ -193,14 +217,14 @@ var ourCustomControl = L.Control.extend({
     },
     onAdd: function (map) {
         var container = L.DomUtil.create('button'); 
-        container.innerText = 'Find Aerial Imagery';    // text for button
+        container.innerText = 'Find\nAerial\nImagery';    // text for button
         container.style.backgroundColor = 'white';      // styles for the button
-        container.style.borderWidth = '2px';            // these options make it look like
-        container.style.borderColor = '#b4b4b4';        // all of the other buttons that
-        container.style.borderRadius = '5px';           // are already there
-        container.style.borderStyle = 'solid';
-        container.style.width = '140px';
-        container.style.height = '30px';
+        container.style.borderWidth = '2px';
+        container.style.borderColor = '#b4b4b4';        // these options make it look like
+        container.style.borderRadius = '5px';           // all of the other buttons that
+        container.style.borderStyle = 'solid';          // are already there
+        container.style.width = '65px';
+        container.style.height = '60px';
         
 //Set the function of the button to check if the user input overlaps the aerials
         container.onclick = function(){             // when we click the button
@@ -209,76 +233,72 @@ var ourCustomControl = L.Control.extend({
 
             if (userShape === null) {                  // if the user has not set an input
                 console.log('Wrong levaaaaAAAAAAHHHHH!!!!!!');       // return an error message
+                $('#searchResults').empty();
+                $('#searchResults').append('<p>Please select an area to search.</p>');
                 return; // skips the rest of the function, so that nothing else happens
-            }
-            numResults = 0; // count number of results for error handling
-            //iterate through the json and check if the polygons overlap the user input
-            sameJson.features.forEach(function(feature) {
-                var geometry = feature.geometry;
-                var item = userSettings(feature)[1]; // set the item variable, so we can use it to post problems we find
+            } else {
+                numResults = 0; // count number of results for error handling
+                //iterate through the json and check if the polygons overlap the user input
+                sameJson.features.forEach(function(feature) {
+                    var geometry = feature.geometry;
+                    var item = userSettings(feature)[1]; // set the item variable, so we can use it to post problems we find
 
-                // check for null values, skip if present
-                if(!geometry || !userShape) {
-                    console.log('ERROR: Invalid geometry or userShape on Photo',item);
-                    return; // skip if either item is null
+                    // check for null values, skip if present
+                    if(!geometry || !userShape) {
+                        console.log('ERROR: Invalid geometry or userShape on Photo',item);
+                        return; // skip if either item is null
+                    }
+                    // check that geojson items are polygons
+                    if(feature.geometry.type !== 'Polygon') {
+                        console.log('ERROR: Not a polygon: Photo',item);
+                        return; // skip problem after logging
+                    }
+                    // console.log('Photo ID:',item);
+                    var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
+                    
+                    if (overlap) { 
+                        // if the user polygon is fully within an aerial image, add it to the output list
+                        resultsTable(feature);
+                        // also, show all the images that are selected
+                        console.log("image ID =",item); // report which image is getting displayed
+                        showCog(jsonFilePath(feature),item);
+                        numResults += 1;    // count the number of overlapping results
+                    } else {
+                        // console.log('No overlap.'); // report if there is no overlap
+                    }
+                });
+                if (numResults === 0) { // response if there are no photos
+                    $('#searchResults').empty();    // clear the table we started to make
+                    $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
+                } else {
+                    tableCSS(); // apply styles to the new table
                 }
-                // check that geojson items are polygons
-                if(feature.geometry.type !== 'Polygon') {
-                    console.log('ERROR: Not a polygon: Photo',item);
-                    return; // skip problem after logging
-                }
-                // console.log('Photo ID:',item);
-                var overlap = turf.booleanContains(geometry,userShape) || turf.booleanContains(userShape,geometry);  // check user poly against air json for overlap
-                
-                if (overlap) { 
-                    // if the user polygon is fully within an aerial image, add it to the output list
-                    resultsTable(feature);
-                    // also, show all the images that are selected
-                    showCog(jsonFilePath(feature),item);
-                    numResults += 1;    // count the number of overlapping results
-                }
-                else {
-                    // console.log('No overlap.'); // report if there is no overlap
-                }
-            });
-            if (numResults === 0) { // response if there are no photos
-                $('#searchResults').empty();    // clear the table we started to make
-                $('#searchResults').append('<p>There are no photos in this area.</p>'); // display the no photos result
+                console.log('numResults',numResults); // share the number of results
             }
-            else {
-                tableCSS(); // apply styles to the new table
-            }
-            console.log('numResults',numResults); // share the number of results
         }
         return container;
     },
 });
 map.addControl(new ourCustomControl());
 
-//function to check if a box gets clicked
+// function to use the checkbox to turn an image on or off on the display
 $(document).on("change","input[type='checkbox']", function() {
-    var cBoxID = $(this).attr("id");
-    var cBoxStatus = $(this).prop("checked");
+    var cBoxID = $(this).attr("id");    // the id of this checkbox
+    var layerID = userSettings($(this).closest('tr').data('feature'))[1]; // 
+    console.log("checkbox ID is", cBoxID,"and the layerID is",layerID);
+    var cBoxStatus = $(this).prop("checked"); // checks the check status of the checkbox
+    var thisImage = imgDisplay.getLayer(imgList[layerID]); // searches the list of visible images and selects the one associated with this checkbox
+    console.log("does the image exist?",imgDisplay.hasLayer(imgList[layerID])); // confirms that the image exists in the feature group
     if (cBoxStatus===true) {
-        // if clicked, display the selected item, generate the layer ID, and add it to the map
-        console.log("Checkbox "+cBoxID+" has been selected");
-        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
-        console.log("remove layerID:",layerID);
-        console.log("imgList:",imgList)
-        if (imgList[layerID]) {
-            imgDisplay.addLayer(imgList[layerID]); //remove by layer id
-            console.log("image added...hopefully.")
-        }
-    }
-    else {
-        console.log("Checkbox "+cBoxID+" has been deselected");
-        var layerID = userSettings($(this).closest('tr').data('feature'))[1];
-        console.log("remove layerID:",layerID);
-        console.log("imgList:",imgList)
-        if (imgList[layerID]) {
-            imgDisplay.removeLayer(imgList[layerID]); //remove by layer id
-            console.log("image removed...hopefully.")
-        }
+        // make the selected image visible
+        console.log("Checkbox",cBoxID,"has been selected.");
+        thisImage.setOpacity(1);
+        thisImage.bringToFront();
+    } else {
+        // make the selected image invisible
+        console.log("Checkbox",cBoxID,"has been deselected.");
+        console.log("This image is:",thisImage);
+        thisImage.setOpacity(0);
+
     }
 });
-//if clicked, check which is clicked, and pull the raster display function
