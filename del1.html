@@ -9,19 +9,23 @@ edited and added to by all contributors. That may change as time goes on, not re
     <head>
         <meta charset="utf-8">
         <title>Deliverable 1 - Project 2306 - Cambium Inc.</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- js for hamburger nav -->
+        <script src="javascript/jsMain.js"></script>
         <!-- Our site's CSS -->
         <link rel="stylesheet" href="stylesMain.css"/>
     </head>
     <body>
+        <!-- This site uses semantic html - https://www.w3schools.com/html/html5_semantic_elements.asp -->
         <header>
-            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="del1.html">Deliverable 1</a>
-                <a href="del2.html" target="_blank">Deliverable 2 Application</a>
-                <a href="del2info.html">Deliverable 2 Info</a>
-                <a href="team.html">Team</a>
-                <a href="method.html">Method</a>              
+            <!-- <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo"> -->
+            <nav class="topnav" id="hamburger">
+                <a href="index.html" id="home">Streamlining GIS Processes<br>for Cambium Inc.</a>
+                <a href="del1.html" class="subMenu">Deliverable 1<br>Well Water Information System</a>
+                <a href="del2.html" class="subMenu">Deliverable 2<br>Aerial Image Application</a>
+                <a href="del2info.html" class="subMenu">Deliverable 2<br>Methodology</a>
+                <a href="team.html" class="subMenu">Meet the<br>Team</a>
+                <a href="javascript:void(0);" class="icon" onclick="navFunction()">&#9776;</a>        
             </nav>
         </header>
         <main>

@@ -22,34 +22,34 @@ body {
     flex-direction: column; /* elements in the body go top to bottom*/
 }
 header {
+    
     width: 100%;
     font-size: 1.2vw;
     position: fixed; /* remains at the top while scrolling */
     background-color: white;
     height: 11vh; /* required to stick at the top */
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* center the navigation vertically*/
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+
 }
 nav {
-    width: 100%;
+    /* width: 50%; */
     overflow: hidden;
-    display: flex; 
-    flex-flow: row wrap;
+    /* display: flex; 
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center; */
 }
 nav a {
     color: #880015;
     background-color: white;
+    text-align: center;
     padding: .65vw;
     transition: all .5s ease;
     border-radius: 1.75vw;
     border: 2px solid #1B8F3D;
     margin: auto;
-    font-size: 12pt;
     text-decoration: none;
-    text-align: center;
 }
 .topnav a:not(:first-child) {
     display: none;
@@ -59,8 +59,7 @@ nav a {
     display: block;
 }
 .topnav.responsive {
-   position: relative;
-   vertical-align: top;
+   position: relative; 
 }
 .topnav.responsive a.icon {
     position: absolute;
@@ -70,9 +69,7 @@ nav a {
 .topnav.responsive a {
     float: none;
     display: block;
-}
-.subMenu {
-    width: 100vw;
+    text-align: left;
 }
 main {
     display: flex;
@@ -138,7 +135,7 @@ li {
 
 /* Styling for the title as a link */
 #home {
-    font-size: 12pt;
+    font-size: 1.75vw;
     text-align: left;
     border: none;
     color: #880015;
@@ -168,12 +165,13 @@ li {
 @media screen and (min-width: 800px) {
     nav {
         display: flex;
+        justify-content: space-between;
         flex-direction: row;
         width: 100%;
         overflow: hidden;
-        justify-content: space-between;
     }
     nav a {
+        /* display: flex; */
         overflow: none;
     } 
     nav a:hover {
@@ -185,11 +183,9 @@ li {
     .topnav a.icon {
         display: none;
     }
-    .subMenu {
-        width: fit-content;
-    }
-    #home {
-        font-size: 1.75vw;
-        justify-self: start;
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 }

@@ -9,35 +9,47 @@ edited and added to by all contributors. That may change as time goes on, not re
     <head>
         <meta charset="utf-8">
         <title>Project 2306 - Cambium Inc.​</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Our site's CSS -->
         <link rel="stylesheet" href="stylesMain.css"/>
     </head>
     <body>
+        <!-- This site uses semantic html - https://www.w3schools.com/html/html5_semantic_elements.asp -->
         <header>
-            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="del1.html">Deliverable 1</a>
-                <a href="del2.html" target="_blank">Deliverable 2 Application</a>
-                <a href="del2info.html">Deliverable 2 Info</a>
-                <a href="team.html">Team</a>
-                <a href="method.html">Method</a>              
+            <!-- <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo"> -->
+            <nav class="topnav" id="hamburger">
+                <a href="index.html" id="home">Streamlining GIS Processes<br>for Cambium Inc.</a>
+                <a href="del1.html" class="subMenu">Deliverable 1<br>Well Water Information System</a>
+                <a href="del2.html" class="subMenu">Deliverable 2<br>Aerial Image Application</a>
+                <a href="del2info.html" class="subMenu">Deliverable 2<br>Methodology</a>
+                <a href="team.html" class="subMenu">Meet the<br>Team</a>
+                <a href="javascript:void(0);" class="icon" id="menuButton" onclick="navFunction()">&#9776;</a>        
             </nav>
         </header>
         <main>
-            <section>
-                <h1>Streamlining GIS Processes for Cambium Inc.​</h1>
-                <p id="tagline">Simplifying the air photo selection process by creating a web application and streamlining the extraction and delivery of well water data.​</p>
+            <section class="sectionRow">
                 <figure id="cambiumLogo">
-                    <img src="imagery/Cambium-logo.png" alt="Logo for Cambium Inc.">
+                    <img src="imagery/Cambium-logo.png" alt="Logo for Cambium Inc." style='max-width:100%'>
                 </figure>
-                <p>Our client, Cambium Inc., has requested two main solutions to a&#41; modernize and update their internal Well Water Information System &#40;WWIS&#41; database and b&#41; modify their aerial imagery database &#40;including making the imagery internally accessible to those without enterprise software licensing&#41;. This proposal aims to clearly state the project objectives, proposed solution&#40;s&#41;, methodologies, workflows, deliverables, and project timeline required to achieve the proposal&#39;s stated objectives.</p>
-                <p>We assess the client&#39;s original project requirements and determine a set of solutions that will meet their core business needs, optimize their existing technologies and eliminate redundancy. Consideration given to ongoing maintenance and costs with the use of open-source software and pre-existing software licensing, as well as optimal storage and retrieval solutions for both well water data and aerial imagery &#40;including REST endpoint server architecture and Cloud-Optimized GeoTIFFs&#41;.</p>
-
+                <article id="abstract">
+                    <h1>Streamlining GIS Processes for Cambium Inc.​</h1>
+                    <p id="tagline">Simplifying the air photo selection process by creating a web application and streamlining the extraction and delivery of well water data.​</p>
+                    <p>Our client, Cambium Inc., requested two solutions as part of the project:</p>
+                    <ul>
+                        <li>Streamline their internal Well Water Information System, and </li>
+                        <li>Modify the processing and retrieval of aerial imagery (including internal access without enterprise-level software licensing). </li>
+                    </ul>
+                    <p>To achieve these objectives, we divided the project into two deliverables.</p>
+                    <p>The first replaced Cambium&#39;s existing well water database with an ArcGIS Pro server connection to the Ministry of the Environment, Conservation and Parks publicly hosted well water feature layer.</p>
+                    <p>For the second deliverable we developed a web application using Leaflet; to support the web application we also developed a process to convert images to Cloud Optimized GeoTIFF, and created a GeoJSON data store to support the retrieval of images and their associated data.</p>
+                    <p>Consideration was given to ongoing maintenance and costs with the use of open-source software and pre-existing software licensing. Optimizing storage and retrieval solutions for both well water data and aerial imagery were also key considerations.</p>                    
+                </article>
             </section>
         </main>
         <footer>
             <p>copyright SEK Group 2022</p>
         </footer>
+        <!-- js for hamburger nav -->
+        <script src="javascript/jsMain.js"></script>
     </body>
 </html>
