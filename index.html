@@ -11,30 +11,31 @@ edited and added to by all contributors. That may change as time goes on, not re
         <title>Project 2306 - Cambium Inc.​</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Our site's CSS -->
-        <link rel="stylesheet" href="stylesMain.css"/>
+        <link rel="stylesheet" href="css/stylesMain.css"/>
+        <!-- Add jQuery -->
+        <script src="javascript\lib\jquery.min.js"></script>
+        <!-- our site's javascript-->
+        <script src="javascript\jsMain.js"></script>
     </head>
     <body>
         <!-- This site uses semantic html - https://www.w3schools.com/html/html5_semantic_elements.asp -->
         <header>
-            <!-- <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo"> -->
-            <nav class="topnav" id="hamburger">
-                <a href="index.html" id="home">Streamlining GIS Processes<br>for Cambium Inc.</a>
-                <a href="del1.html" class="subMenu">Deliverable 1<br>Well Water Information System</a>
-                <a href="del2.html" class="subMenu">Deliverable 2<br>Aerial Image Application</a>
-                <a href="del2info.html" class="subMenu">Deliverable 2<br>Methodology</a>
-                <a href="team.html" class="subMenu">Meet the<br>Team</a>
-                <a href="javascript:void(0);" class="icon" id="menuButton" onclick="navFunction()">&#9776;</a>        
+            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
+            <nav>
+                <a href="index.html" id="home"></a>
+                <a href="del1.html" id="del1"></a>
+                <a href="del2.html" id="del2"></a>
+                <a href="del2info.html" id="del2info"></a>
+                <a href="team.html" id="team"></a>
             </nav>
         </header>
         <main>
+            <h1>Streamlining GIS Processes for Cambium Inc.​</h1>
+            <p id="tagline" class="spacer">Simplifying the air photo selection process by creating a web application and streamlining the extraction and delivery of well water data.​</p>
             <section class="sectionRow">
-                <figure id="cambiumLogo">
-                    <img src="imagery/Cambium-logo.png" alt="Logo for Cambium Inc." style='max-width:100%'>
-                </figure>
+                <a href="https://cambium-inc.com" id="cambiumLogo" target="_blank"><img src="imagery/Cambium-logo.png" alt="Logo for Cambium Inc."  style='max-width:100%'></a>
                 <article id="abstract">
-                    <h1>Streamlining GIS Processes for Cambium Inc.​</h1>
-                    <p id="tagline">Simplifying the air photo selection process by creating a web application and streamlining the extraction and delivery of well water data.​</p>
-                    <p>Our client, Cambium Inc., requested two solutions as part of the project:</p>
+                    <p>Our client, <a href="https://cambium-inc.com">Cambium Inc.</a>, requested two solutions as part of the project:</p>
                     <ul>
                         <li>Streamline their internal Well Water Information System, and </li>
                         <li>Modify the processing and retrieval of aerial imagery (including internal access without enterprise-level software licensing). </li>
@@ -49,7 +50,5 @@ edited and added to by all contributors. That may change as time goes on, not re
         <footer>
             <p>copyright SEK Group 2022</p>
         </footer>
-        <!-- js for hamburger nav -->
-        <script src="javascript/jsMain.js"></script>
     </body>
 </html>

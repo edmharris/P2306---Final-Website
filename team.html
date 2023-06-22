@@ -10,46 +10,60 @@ edited and added to by all contributors. That may change as time goes on, not re
         <meta charset="utf-8">
         <title>Team - Project 2306 - Cambium Inc.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- js for hamburger nav -->
-        <script src="javascript/jsMain.js"></script>
         <!-- Our site's CSS -->
-        <link rel="stylesheet" href="stylesMain.css"/>
+        <link rel="stylesheet" href="css/stylesMain.css"/>
+        <!-- Add jQuery -->
+        <script src="javascript\lib\jquery.min.js"></script>
+        <!-- our site's javascript-->
+        <script src="javascript\jsMain.js"></script>
     </head>
     <body>
         <!-- This site uses semantic html - https://www.w3schools.com/html/html5_semantic_elements.asp -->
         <header>
-            <!-- <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo"> -->
-            <nav class="topnav" id="hamburger">
-                <a href="index.html" id="home">Streamlining GIS Processes<br>for Cambium Inc.</a>
-                <a href="del1.html" class="subMenu">Deliverable 1<br>Well Water Information System</a>
-                <a href="del2.html" class="subMenu">Deliverable 2<br>Aerial Image Application</a>
-                <a href="del2info.html" class="subMenu">Deliverable 2<br>Methodology</a>
-                <a href="team.html" class="subMenu">Meet the<br>Team</a>
-                <a href="javascript:void(0);" class="icon" onclick="navFunction()">&#9776;</a>        
+            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
+            <nav>
+                <a href="index.html" id="home"></a>
+                <a href="del1.html" id="del1"></a>
+                <a href="del2.html" id="del2"></a>
+                <a href="del2info.html" id="del2info"></a>
+                <a href="team.html" id="team"></a>
             </nav>
         </header>
         <main>
             <h1>Meet the Team</h1>
-            <article>
-                <p>The SEK group was formed in 2023 as a part of Fleming College's GIS Collaborative Project
-                to work together to develop some mapping solutions for Cambium Inc.
-                </p>
-                <h2 id="S">Stephen VanDam</h2>
-                <p>The S in 'SEK'. Enthusiastic web programmer with an eye for detail, Stephen has a background in environmental and construction engineering and looks forward to finessing the user interface and making sure the print and web outputs look great.</p>
-                <address>
-                    He can be reached at <a href="stephen@vandam.ca">stephen@vandam.ca</a>
-                </address>
-                <h2 id="E">Ewan Harris</h2>
-                <p>The 'E' in SEK. After 20+ years in Financial Services, Ewan is now in the process of becoming a GIS professional with a desire to specialize in database management and development and will be providing support for all our project database needs. </p>
-                <address>
-                    He can be reached at <a href="ewanharri2@gmail.com">ewanharri2@gmail.com</a>
-                </address>
-                <h2 id="K">Kamryn Sandiford</h2>
-                <p>The 'K' in SEK. As a trained GIS specialist with a passion for geography, and the science of space and location, Kamryn manages the SEK Groups programming and customization of client-solutions.</p>
-                <address>
-                    He can be reached at <a href="">sandiford.kamryn@gmail.com</a>
-                </address>
-            </article>
+            <p class="spacer">The SEK group was formed in 2023 as a part of Fleming College's GIS Collaborative Project
+            to work together to develop some mapping solutions for Cambium Inc.
+            </p>
+            <section class="spacer">
+                <img src="imagery/profiles/Stephen.jpg" alt="Stephen's Face" class="profile" style='max-width:100%'>
+                <article>
+                    <h2 class="smallCentre" id="S">Stephen VanDam</h2>
+                    <p>The S in 'SEK'. Enthusiastic web programmer with an eye for detail, Stephen has a background in environmental and construction engineering and looks forward to finessing the user interface and making sure the print and web outputs look great.</p>
+                    <address>
+                        He can be reached at <a href="stephen@vandam.ca">stephen@vandam.ca</a>
+                    </address>
+                </article>
+            </section>
+            <section class="spacer">
+                <img src="imagery/profiles/Ewan.png" alt="Ewan's Face" class="profile" style='max-width:100%'>
+                <article>
+                    <h2 class="smallCentre" id="E">Ewan Harris</h2>
+                    <p>The 'E' in SEK. After 20+ years in Financial Services, Ewan is now in the process of becoming a GIS professional with a desire to specialize in database management and development and will be providing support for all our project database needs. </p>
+                    <address>
+                        He can be reached at <a href="ewanharri2@gmail.com">ewanharri2@gmail.com</a>
+                    </address>
+                </article>
+            </section>
+            <section class="spacer">
+                <img src="imagery/profiles/Kam.png" alt="KAm's Face" class="profile" style='max-width:100%'>
+                <article>
+                    <h2 class="smallCentre" id="K">Kamryn Sandiford</h2>
+                    <p>The 'K' in SEK. As a trained GIS specialist with a passion for geography, and the science of space and location, Kamryn manages the SEK Groups programming and customization of client-solutions.</p>
+                    <address>
+                        He can be reached at <a href="">sandiford.kamryn@gmail.com</a>
+                    </address>
+                </article>
+            </section> 
         </main>
         <footer>
             <p>copyright SEK Group 2023</p>

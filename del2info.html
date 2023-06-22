@@ -11,25 +11,30 @@ edited and added to by all contributors. That may change as time goes on, not re
         <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
         <title>Deliverable 2 - Project 2306 - Cambium Inc.</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- js for hamburger nav -->
-        <script src="javascript/jsMain.js"></script>
         <!-- Our site's CSS -->
         <link rel="stylesheet" href="stylesMain.css"/>
+        <!-- Add jQuery -->
+        <script src="javascript\lib\jquery.min.js"></script>
+        <!-- our site's javascript-->
+        <script src="javascript\jsMain.js"></script>
     </head>
     <body>
         <!-- This site uses semantic html - https://www.w3schools.com/html/html5_semantic_elements.asp -->
         <header>
-            <!-- <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo"> -->
-            <nav class="topnav" id="hamburger">
-                <a href="index.html" id="home">Streamlining GIS Processes<br>for Cambium Inc.</a>
-                <a href="del1.html" class="subMenu">Deliverable 1<br>Well Water Information System</a>
-                <a href="del2.html" class="subMenu">Deliverable 2<br>Aerial Image Application</a>
-                <a href="del2info.html" class="subMenu">Deliverable 2<br>Methodology</a>
-                <a href="team.html" class="subMenu">Meet the<br>Team</a>
-                <a href="javascript:void(0);" class="icon" onclick="navFunction()">&#9776;</a>        
+            <img id="logo" src="imagery/SEKgroup.png" alt="SEK Logo">
+            <nav>
+                <a href="index.html" id="home"></a>
+                <a href="del1.html" id="del1"></a>
+                <a href="del2.html" id="del2"></a>
+                <a href="del2info.html" id="del2info"></a>
+                <a href="team.html" id="team"></a>
             </nav>
         </header>
         <main>
+            <h1>Deliverable 2 - Aerial Imagery Application Methodology</h1>
+            <p>Cambium requested that we build a system by which their entire organization could have access to view the
+                aerial imagery that they had collected for various projects. To accomplish this we developed a web
+                application using Leaflet, a GeoJSON, and a conversion to Cloud Optimised GeoTIFFs (COG).</p>
             <h2>What is Leaflet?</h2>
             <p>Leaflet is a lightweight, open-source javascript mapping library. It is fast, easy
                 to use and learn, and very capable. It is also free-to-use and open source, with
@@ -37,9 +42,29 @@ edited and added to by all contributors. That may change as time goes on, not re
                 several options, it was selected as the web mapping library of choice for our project.
             </p>
             <h2>What is our process?</h2>
-            <p>We used GDAL to convert a GeoTIFF to COG. For exploration purposes, we attempted it in
-                both ArcGIS Pro and QGIS. We also developed a basic Leaflet application, and attempted
-                to get a few different image formats to load - COG, GeoTIFF, and a regular PNG.
+            <p>First we created a batch script that uses GDAL to convert their existing GeoTIFFs to COGs, and
+                reproject those images to EPSG 3857.
+            </p>
+            <p>Next we wrote a Python script to conglomerate all of the files relating to the aerial imagery
+                into a GeoJSON data store. It pulls their existing shapefile of image bounds, their CSV of
+                image data, and the file paths of the images themselves and combines them by photo ID.
+            </p>
+            <p>Finally, we used Leaflet to develop the web application,
+                <a href="del2.html" target="_blank">which you can sample here.</a> It allows their non-GIS staff
+                to select an area of interest, find any imagery available for that location, and then view those
+                images and their associated data. For the sake of confidentiality, the app available here uses a
+                sample data set that we developed for testing, using images acquired from
+                <!-- Trent Uni Link and Reference Here. -->
+            </p>
+            <h2>What is GDAL?</h2>
+            <p>The Geospatial Data Abstraction Library</p>
+            <h2>What is a GeoJSON?</h2>
+            <p>A variant on the standard JSON (Javascript Object Notation format), GeoJSON is a data store that
+                allows us to store information, including coordinate data and other properties that we define,
+                and save them to a specific identifier - for our project, we used the Photo ID. That way, when
+                our application needs to find information or coordinates for an image, it's simple to look up.
+                It also allowed us to store the file path for each image, so that the application can find them
+                without requiring any server-side scripts.
             </p>
         </main>
         <footer>
