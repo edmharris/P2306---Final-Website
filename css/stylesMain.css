@@ -130,20 +130,26 @@ li {
 #abstract {
     flex-shrink: 2;
 }
-#storymap {
+#storymap { /* link to the storymap */
     font-size: 18pt;
 }
-#storySlides {
+#storySlides { /* div containing the slideshow*/
     width: 100vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
-.slideshow {
+.slideshow { /* images in the slideshow */
     max-width: 80vw;
 }
-.profile {
+
+
+
+.profile { /* profile picture */
     max-height: 15vh;
     margin: 1vh 2vw;
 }
-.spacer {
+.spacer { /* any element that needs a good space below it */
     margin-bottom: 2vh;
 }
 #S {
