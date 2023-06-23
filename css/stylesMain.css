@@ -133,6 +133,12 @@ li {
 #storymap {
     font-size: 18pt;
 }
+#storySlides {
+    width: 100vw;
+}
+.slideshow {
+    max-width: 80vw;
+}
 .profile {
     max-height: 15vh;
     margin: 1vh 2vw;
