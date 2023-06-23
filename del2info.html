@@ -57,7 +57,13 @@ edited and added to by all contributors. That may change as time goes on, not re
                 <!-- Trent Uni Link and Reference Here. -->
             </p>
             <h2>What is GDAL?</h2>
-            <p>The Geospatial Data Abstraction Library</p>
+            <p>Client aerial imagery was pre-processed from its current format (GeoTIFF) to Cloud Optimized
+                GeoTIFF, for optimal storage and retrieval, using the Geospatial Data Abstraction Library (GDAL).
+                The commands in this library were accessed via a Windows batch file script, run within the
+                OSGeo4W command shell that was bundled with an installation of QGIS (providing a command-line interface
+                that includes the GDAL library). During this process the projection of the imagery was modified to EPSG 3857, to make it compatible with
+                Leaflet. 
+                </p>
             <h2>What is a GeoJSON?</h2>
             <p>A variant on the standard JSON (Javascript Object Notation format), GeoJSON is a data store that
                 allows us to store information, including coordinate data and other properties that we define,
