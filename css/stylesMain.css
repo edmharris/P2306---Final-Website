@@ -130,6 +130,9 @@ li {
 #abstract {
     flex-shrink: 2;
 }
+#storymap {
+    font-size: 18pt;
+}
 .profile {
     max-height: 15vh;
     margin: 1vh 2vw;
