@@ -35,40 +35,37 @@ edited and added to by all contributors. That may change as time goes on, not re
             <a href="https://storymaps.arcgis.com/stories/17c305326f3f437087f9e66eb810b2e6" target="_blank" id="storymap" class="spacer">
                 Click here to view our Water Well Information System Storymap!
             </a>
-            <img class="slideshow" src="1_SM_TitlePage.jpg" alt="TitlePage">
-            <img class="slideshow" src="2_SM_IntroPage.jpg" alt="IntroPage">
-            <img class="slideshow" src="3_SM_LotsOfWells.jpg" alt="LotsOfWells">
-            <img class="slideshow" src="4_SM_LessWellsSite.jpg" alt="LessWellsSite">
-            <img class="slideshow" src="5_SM_LessWellsBuffer.jpg" alt="LessWellsBuffer">
-            <img class="slideshow" src="6_SM_BufferWithWells.jpg" alt="BufferWithWells">
-            <img class="slideshow" src="7_SM_BufferWithWells_2.jpg" alt="BufferWithWells_2">
-            <img class="slideshow" src="8_SM_SingleWell.jpg" alt="SingleWell">
-            <img class="slideshow" src="9_SM_SingleWell2.jpg" alt="SingleWell">
-            <img class="slideshow" src="10_SM_SiteBufferKingston.jpg" alt="SiteBufferKingston">
-            
-
-            
-            <p>By automating the production of outputs for Cambium hydrogeological group’s well water information system reports, we are elimating their reliance on 
-                antiquated Microsoft Access database, which needed updating periodically, with a live link to the Ontario Ministry of the Envrionment's (MOE) web service. 
-                This deliverable consisted of four parts:</p>
-            <ul>
-                <li>Server connection to the MOE's Rest Endpoint (web service).</li> 
-                <li>Creation of custom scripts to automate the process.</li>          
-                <li>Production of report templates, in ArcGIS Pro, providing a method to output a PDF of the well data. 
-                <li>Creation of supporting files, including standard operatiing procedures.</li>
-            </ul>
-            <p>The Rest endpoint is the data source provided by the MOE, and makes available the Well Water Information System database directly into ArcGIS Pro. 
-                It requires an active internet connection to use, but has the benefit that unless the url changes, it does not need to be updated, and will push 
-                through the Ministry’s quarterly updates without requiring any user input.</p> 
-            <p>The custom scripts, designed by the Fleming Collaborative Project team 2306, automate the basic setup for accessing the endpoint, and fully automate 
-                the more complex task of locating relevant data, splitting it into readable tables, and converting all units to metric as required.</p> 
-            <p>The report template allows Cambium’s drafting team to produce a PDF report of the above mentioned data from within ArcGIS Pro. It takes in the table 
-                data created by the custom script as fields, allows them to be positioned as required on a page, and then replicates that setup for each row of data.</p>
-            <p>Supporting files include all of the original python files for the script, and for troubleshooting the script, as well as this document, which includes 
-                the processes required for use, maintenance, and initial setup in case of server failure or other unforeseen circumstances.</p>   
-        </main>
+            <p class="spacer">...but if that doesn't work, here's the same thing in a slideshow!</p>
+            <div id="storySlides">
+                <button class="button left" onclick="plusDivs(-1)">&#10094;</button>
+                <img class="slideshow" src="imagery/Storymap_images/1_SM_TitlePage.jpg" alt="TitlePage">
+                <img class="slideshow" src="imagery/Storymap_images/2_SM_IntroPage.jpg" alt="IntroPage">
+                <img class="slideshow" src="imagery/Storymap_images/3_SM_LotsOfWells.jpg" alt="LotsOfWells">
+                <img class="slideshow" src="imagery/Storymap_images/4_SM_LessWellsSite.jpg" alt="LessWellsSite">
+                <img class="slideshow" src="imagery/Storymap_images/5_SM_LessWellsBuffer.jpg" alt="LessWellsBuffer">
+                <img class="slideshow" src="imagery/Storymap_images/6_SM_BufferWithWells.jpg" alt="BufferWithWells">
+                <img class="slideshow" src="imagery/Storymap_images/7_SM_BufferWithWells_2.jpg" alt="BufferWithWells_2">
+                <img class="slideshow" src="imagery/Storymap_images/8_SM_SingleWell.jpg" alt="SingleWell">
+                <img class="slideshow" src="imagery/Storymap_images/9_SM_SingleWell2.jpg" alt="SingleWell">
+                <img class="slideshow" src="imagery/Storymap_images/10_SM_SiteBufferKingston.jpg" alt="SiteBufferKingston">
+                <img class="slideshow" src="imagery/Storymap_images/11_SM_SitePolygonKingston.jpg" alt="image 2">
+                <img class="slideshow" src="imagery/Storymap_images/12_SM_BoreholeR1.jpg" alt="image 3">
+                <img class="slideshow" src="imagery/Storymap_images/13_SM_BoreholeR2.jpg" alt="image 4">
+                <img class="slideshow" src="imagery/Storymap_images/14_SM_PythonParsingCode.jpg" alt="image 5">
+                <img class="slideshow" src="imagery/Storymap_images/15_SM_BoreholeD1.jpg" alt="image 6">
+                <img class="slideshow" src="imagery/Storymap_images/16_SM_BoreholeD2.jpg" alt="image 7">
+                <img class="slideshow" src="imagery/Storymap_images/17_SM_BoreholeD3.jpg" alt="image 8">
+                <img class="slideshow" src="imagery/Storymap_images/18_SM_PostScriptUnitConv.jpg" alt="image 9">
+                <img class="slideshow" src="imagery/Storymap_images/19_SM_PostScriptUnitConv2.jpg" alt="image 10">
+                <img class="slideshow" src="imagery/Storymap_images/20_SM_PostScriptUnitConv3.jpg" alt="image 12">
+                <img class="slideshow" src="imagery/Storymap_images/21_SM_PostScriptUnitConv4.jpg" alt="image 13">
+                <img class="slideshow" src="imagery/Storymap_images/22_SM_CSVandReport.jpg" alt="image 14">
+                <button class="button right" onclick="plusDivs(+1)">&#10095;</button>
+                </div>
+            </main>
         <footer>
             <p>copyright SEK Group 2022</p>
         </footer>
+        <script src="javascript\slideshow.js"></script>
     </body>
 </html>
